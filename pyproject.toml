@@ -7,10 +7,13 @@ authors = [
     {name = "Simon",email = "spam@esemi.ru"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "~=3.12"
 dependencies = [
+    "yandex-music>=2.1.1",
 ]
 
+[tool.poetry]
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
