@@ -9,20 +9,15 @@ pip install -U --no-cache-dir poetry pip setuptools
 poetry install
 ```
 
-### Setup token
-```shell
-chrome https://oauth.yandex.ru/authorize?response_type=token&client_id=1a6990aa636648e9b2ef855fa7bec2fb
-export YANDEX_MUSIC_TOKEN=%U_TOKEN_HERE%
-```
-
 ### Run
 ```shell
-python -m backup.refresh
+python -m refresh -u esemyon -x 92.39.141.246:65056
 ```
 
-TODOs
----
-- up readme for local run
-- check oauth token needed or not
-- setup crontab
-- describe project
+
+### Crontab example
+```text 
+*/30 * * * * cd ~/development/yandex-music-playlist-backup && venv/bin/python -m refresh -u esemyon -x 92.39.141.246:65056 >> refresh.log 2>&1
+
+
+```
