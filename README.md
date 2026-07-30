@@ -12,7 +12,7 @@ poetry install
 ### Usage
 
 ```text
-python -m refresh -u <username> [-x <proxy>]
+python -m app -u <username> [-x <proxy>]
 ```
 
 | Flag | Long | Required | Description |
@@ -24,26 +24,22 @@ python -m refresh -u <username> [-x <proxy>]
 
 ```shell
 # minimal run — back up likes of user `esemyon`
-python -m refresh -u esemyon
+python -m app -u esemyon
 
 # same, but through a SOCKS/HTTP proxy (required outside Russia)
-python -m refresh -u esemyon -x 127.0.0.1:1080
+python -m app -u esemyon -x 127.0.0.1:1080
 
 # long-form flags
-python -m refresh --username esemyon --proxy 127.0.0.1:1080
+python -m app --username esemyon --proxy 127.0.0.1:1080
 ```
 
 ### Crontab example
 ```text
-*/30 * * * * cd ~/development/yandex-music-playlist-backup && venv/bin/python -m refresh -u esemyon -x 127.0.0.1:1080 >> logs/refresh.log 2>&1
+*/30 * * * * cd ~/development/yandex-music-playlist-backup && venv/bin/python -m app -u esemyon -x 127.0.0.1:1080 >> logs/refresh.log 2>&1
 ```
 
 ### TODO
-[x] апнуть питон на 15
-[ ] пофиксить баги от клода
-[ ] app
 [ ] сетингсы
-[x] добавить доки по флагам
 [ ] линтеры
 [ ] тесты
 [ ] добавить выкачивание треков с яндекса

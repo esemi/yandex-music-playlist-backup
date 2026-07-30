@@ -1,6 +1,4 @@
 """Module for backing up Yandex Music playlist tracks."""
-import argparse
-import asyncio
 import csv
 import logging
 import os
@@ -159,31 +157,3 @@ def _save_tracks_to_csv(tracks: list[Track], csv_path: str = 'tracks.csv') -> No
                 'is_deleted': int(track.is_deleted),
             }
             writer.writerow(row)
-
-
-if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)-8s %(message)s',  # noqa: WPS323
-    )
-
-    parser = argparse.ArgumentParser(description='Run Yandex Music likes backup.')
-    parser.add_argument(
-        '-u', '--username',
-        required=True,
-        type=str,
-        help='Username of playlist owner',
-    )
-    parser.add_argument(
-        '-x', '--proxy',
-        required=False,
-        type=str,
-        default=None,
-        help='Proxy server <example: 127.0.0.1:1080>',
-    )
-
-    args = parser.parse_args()
-    asyncio.run(main(
-        playlist_owner=args.username,
-        proxy_server=args.proxy,
-    ))
