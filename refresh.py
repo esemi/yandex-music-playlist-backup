@@ -179,7 +179,7 @@ if __name__ == '__main__':
         required=False,
         type=str,
         default=None,
-        help='Proxy server <example: 92.39.141.246:65056>',
+        help='Proxy server <example: 127.0.0.1:1080>',
     )
 
     args = parser.parse_args()

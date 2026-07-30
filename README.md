@@ -3,21 +3,51 @@ Yandex music playlist backup tool
 
 ### Local setup
 ```shell
-python3.13 -m venv venv
+python3.15 -m venv venv
 source venv/bin/activate
-pip install -U --no-cache-dir poetry pip setuptools
+pip install -U --no-cache-dir poetry pip
 poetry install
 ```
 
-### Run
-```shell
-python -m refresh -u esemyon -x 92.39.141.246:65056
+### Usage
+
+```text
+python -m refresh -u <username> [-x <proxy>]
 ```
 
+| Flag | Long | Required | Description |
+| --- | --- | --- | --- |
+| `-u` | `--username` | yes | Username of the playlist owner whose likes are backed up |
+| `-x` | `--proxy` | no | Proxy `host:port`, e.g. `127.0.0.1:1080` — use it when running outside Russia |
+
+### Examples
+
+```shell
+# minimal run — back up likes of user `esemyon`
+python -m refresh -u esemyon
+
+# same, but through a SOCKS/HTTP proxy (required outside Russia)
+python -m refresh -u esemyon -x 127.0.0.1:1080
+
+# long-form flags
+python -m refresh --username esemyon --proxy 127.0.0.1:1080
+```
 
 ### Crontab example
-```text 
-*/30 * * * * cd ~/development/yandex-music-playlist-backup && venv/bin/python -m refresh -u esemyon -x 92.39.141.246:65056 >> refresh.log 2>&1
-
-
+```text
+*/30 * * * * cd ~/development/yandex-music-playlist-backup && venv/bin/python -m refresh -u esemyon -x 127.0.0.1:1080 >> logs/refresh.log 2>&1
 ```
+
+### TODO
+[x] апнуть питон на 15
+[ ] пофиксить баги от клода
+[ ] app
+[ ] сетингсы
+[x] добавить доки по флагам
+[ ] линтеры
+[ ] тесты
+[ ] добавить выкачивание треков с яндекса
+[ ] добавить выкачивание треков с ютюба
+[ ] качать только то чего нет на диске
+[ ] добавить доки по рсинку на плеер
+[ ] переделываем в десктоп апку?
