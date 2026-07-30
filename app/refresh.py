@@ -4,13 +4,14 @@ import logging
 import os
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 
 from yandex_music import ClientAsync, TracksList
 from yandex_music.utils.request_async import Request
 
 from app.settings import app_settings
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -61,12 +62,12 @@ async def _refresh_playlist(
     except RuntimeError:
         existing_tracks = []
     existing_track_ids: set[str] = {track.track_id for track in existing_tracks}
-    logger.debug('got {0} existing tracks'.format(len(existing_tracks)))
+    logger.debug(f'got {len(existing_tracks)} existing tracks')
 
     # Get actual tracks from Yandex Music
     actual_tracks: list[Track] = await _get_liked_tracks(client, owner_id)
     actual_tracks_by_id = {track.track_id: track for track in actual_tracks}
-    logger.debug('got {0} actual tracks'.format(len(actual_tracks)))
+    logger.debug(f'got {len(actual_tracks)} actual tracks')
 
     if not existing_tracks:
         logger.debug('Initial run')
@@ -79,21 +80,20 @@ async def _refresh_playlist(
         actual_track = actual_tracks_by_id.get(exist_track.track_id)
         if exist_track.is_deleted:
             if actual_track and not actual_track.is_deleted:
-                logger.debug('track {0} restored'.format(exist_track.fullname))
+                logger.debug(f'track {exist_track.fullname} restored')
                 exist_track.is_deleted = False
 
-        elif not exist_track.is_deleted:
-            if not actual_track or actual_track.is_deleted:
-                exist_track.is_deleted = True
-                logger.debug('track {0} deleted'.format(exist_track.fullname))
-                deleted_tracks.append(exist_track)
+        elif not actual_track or actual_track.is_deleted:
+            exist_track.is_deleted = True
+            logger.debug(f'track {exist_track.fullname} deleted')
+            deleted_tracks.append(exist_track)
 
         refreshed_tracks.append(exist_track)
 
     added_tracks = []
     for actual_track in actual_tracks:
         if actual_track.track_id not in existing_track_ids:
-            logger.debug('track {0} added'.format(actual_track.fullname))
+            logger.debug(f'track {actual_track.fullname} added')
             added_tracks.append(actual_track)
             refreshed_tracks.append(actual_track)
 
@@ -111,7 +111,7 @@ async def _get_liked_tracks(client: ClientAsync, owner_id: str) -> list[Track]:
     now = datetime.now()
 
     raw_tracks = await client.tracks(track_ids=likes.tracks_ids)
-    logger.debug('got {0} tracks'.format(len(raw_tracks)))
+    logger.debug(f'got {len(raw_tracks)} tracks')
 
     return [
         Track(
@@ -125,11 +125,11 @@ async def _get_liked_tracks(client: ClientAsync, owner_id: str) -> list[Track]:
     ]
 
 
-def _get_tracks_from_csv(csv_path: str = 'tracks.csv') -> list[Track]:
+def _get_tracks_from_csv(csv_path: Path) -> list[Track]:
     if not os.path.exists(csv_path):
         raise RuntimeError(f'File {csv_path} not found.')
 
-    with open(csv_path, mode='r', encoding='utf-8', newline='') as f:
+    with open(csv_path, encoding='utf-8', newline='') as f:
         reader = csv.DictReader(f)
         return [
             Track(
@@ -143,7 +143,7 @@ def _get_tracks_from_csv(csv_path: str = 'tracks.csv') -> list[Track]:
         ]
 
 
-def _save_tracks_to_csv(tracks: list[Track], csv_path: str) -> None:
+def _save_tracks_to_csv(tracks: list[Track], csv_path: Path) -> None:
     fieldnames = ['track_id', 'artist', 'title', 'added_at', 'is_deleted']
 
     with open(csv_path, mode='w', encoding='utf-8', newline='') as f:

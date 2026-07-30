@@ -1,7 +1,7 @@
 [project]
 name = "yandex-music-playlist-backup"
 version = "0.1.0"
-description = ""
+description = "CLI to snapshot and version a Yandex Music user's liked tracks"
 license = "GPL-3.0-or-later"
 authors = [
     {name = "Simon",email = "spam@esemi.ru"}
@@ -13,9 +13,38 @@ dependencies = [
     "pydantic-settings (>=2.14.2,<3.0.0)",
 ]
 
+[dependency-groups]
+dev = [
+    "ruff (>=0.16.0,<1.0.0)",
+    "mypy (>=1.11.0,<3.0.0)",
+    "vulture (>=2.14,<3.0.0)",
+]
+
 [tool.poetry]
 package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 120
+src = ["app"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "LOG", "RUF"]
+
+[tool.mypy]
+python_version = "3.14"
+files = ["app"]
+strict = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["yandex_music.*"]
+ignore_missing_imports = true
+
+[tool.vulture]
+paths = ["app"]
+min_confidence = 80

@@ -27,7 +27,7 @@ def _parse_args() -> argparse.Namespace:
 if __name__ == '__main__':
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s %(levelname)-8s %(message)s',  # noqa: WPS323
+        format='%(asctime)s %(levelname)-8s %(message)s',
     )
 
     args = _parse_args()
