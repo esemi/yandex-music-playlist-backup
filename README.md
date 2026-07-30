@@ -22,7 +22,7 @@ configurable via `app/settings.py` (env vars or `.env`).
 
 ### Local setup
 ```shell
-python3.15 -m venv venv
+python3.14 -m venv venv
 source venv/bin/activate
 pip install -U poetry pip
 poetry install
@@ -58,10 +58,6 @@ python -m app --username esemyon --proxy 127.0.0.1:1080
 ```
 
 ### TODO
-[x] сетингсы
-[x] линтеры (ruff + mypy + vulture, GitHub CI)
-[ ] тесты
-[x] норм описание в ридми
 [ ] добавить выкачивание треков с яндекса
 [ ] добавить выкачивание треков с ютюба
 [ ] качать только то чего нет на диске
