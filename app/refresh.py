@@ -8,6 +8,8 @@ from datetime import datetime
 from yandex_music import ClientAsync, TracksList
 from yandex_music.utils.request_async import Request
 
+from app.settings import app_settings
+
 logger = logging.getLogger(__file__)
 
 
@@ -52,8 +54,8 @@ async def main(
 async def _refresh_playlist(
     client: ClientAsync,
     owner_id: str,
-    csv_path: str = 'tracks.csv',
 ) -> tuple[list[Track], list[Track]]:
+    csv_path = app_settings.playlists_dir / f'{owner_id}.csv'
     try:
         existing_tracks: list[Track] = _get_tracks_from_csv(csv_path)
     except RuntimeError:
@@ -95,7 +97,7 @@ async def _refresh_playlist(
             added_tracks.append(actual_track)
             refreshed_tracks.append(actual_track)
 
-    _save_tracks_to_csv(refreshed_tracks)
+    _save_tracks_to_csv(refreshed_tracks, csv_path)
     return added_tracks, deleted_tracks
 
 
@@ -141,7 +143,7 @@ def _get_tracks_from_csv(csv_path: str = 'tracks.csv') -> list[Track]:
         ]
 
 
-def _save_tracks_to_csv(tracks: list[Track], csv_path: str = 'tracks.csv') -> None:
+def _save_tracks_to_csv(tracks: list[Track], csv_path: str) -> None:
     fieldnames = ['track_id', 'artist', 'title', 'added_at', 'is_deleted']
 
     with open(csv_path, mode='w', encoding='utf-8', newline='') as f:
