@@ -57,14 +57,17 @@ python -m app --username esemyon --proxy 127.0.0.1:1080
 ```
 
 ### Crontab example
+
+`flock -n` guarantees a single instance: if a previous run is still going, the new one exits immediately instead of piling up.
+
 ```text
-*/30 * * * * cd ~/development/yandex-music-playlist-backup && venv/bin/python -m app -u esemyon -x 127.0.0.1:1080 >> logs/refresh.log 2>&1
+*/30 * * * * cd ~/development/yandex-music-playlist-backup && flock -n logs/refresh.lock venv/bin/python -m app -u esemyon -x 127.0.0.1:1080 >> logs/refresh.log 2>&1
 ```
 
 ### TODO
 [x] добавить выкачивание треков с яндекса (флаг --download)
 [x] качать только то чего нет на диске
-[ ] flock to docs
+[x] flock to docs
 [ ] signal catch
 [ ] [качать флаки](https://github.com/llistochek/yandex-music-downloader)
 [ ] ускорить скачивание
