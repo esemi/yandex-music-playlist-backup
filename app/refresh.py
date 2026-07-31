@@ -1,9 +1,11 @@
 """Module for backing up Yandex Music playlist tracks."""
 import asyncio
+import contextlib
 import csv
 import logging
 import os
 import re
+import signal
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -17,6 +19,23 @@ from app.settings import app_settings
 logger = logging.getLogger(__name__)
 
 _FILENAME_UNSAFE = re.compile(r'[\\/:*?"<>|]+')
+
+_shutdown = asyncio.Event()
+
+
+def _install_signal_handlers() -> None:
+    """Ask the running loop to flip the shutdown flag on SIGINT/SIGTERM."""
+    loop = asyncio.get_running_loop()
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        try:
+            loop.add_signal_handler(sig, _request_shutdown, sig)
+        except NotImplementedError:  # pragma: no cover - windows / no-loop-signal support
+            signal.signal(sig, lambda *_, s=sig: _request_shutdown(s))
+
+
+def _request_shutdown(sig: signal.Signals) -> None:
+    logger.warning(f'received {signal.Signals(sig).name}, finishing gracefully')
+    _shutdown.set()
 
 
 def _track_filename(artist: str, title: str) -> str:
@@ -46,6 +65,8 @@ async def main(
     download: bool = False,
 ) -> None:
     """Main function."""
+    _install_signal_handlers()
+
     request = Request(proxy_url=f'http://{proxy_server}') if proxy_server else None
     client = await ClientAsync(request=request, token=app_settings.yandex_token).init()
 
@@ -69,7 +90,7 @@ async def main(
 
     logger.info('Sync completed')
 
-    if download:
+    if download and not _shutdown.is_set():
         logger.info('Downloading started')
         downloaded = await _download_tracks(client, owner_id=playlist_owner, csv_path=csv_path)
         logger.info(f'Downloaded {downloaded} new track(s)')
@@ -168,6 +189,10 @@ async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -
 
     downloaded = 0
     for track in raw_tracks:
+        if _shutdown.is_set():
+            logger.warning(f'shutdown requested, stopping after {downloaded} track(s)')
+            break
+
         if not track.available:
             logger.info(f'skip unavailable {track.title}')
             continue
@@ -190,9 +215,15 @@ async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -
         else:
             downloaded += 1
 
-        await asyncio.sleep(2)
+        await _interruptible_sleep(2)
 
     return downloaded
+
+
+async def _interruptible_sleep(seconds: float) -> None:
+    """Sleep, but wake up immediately if shutdown is requested."""
+    with contextlib.suppress(TimeoutError):
+        await asyncio.wait_for(_shutdown.wait(), timeout=seconds)
 
 
 def _get_tracks_from_csv(csv_path: Path) -> list[Track]:

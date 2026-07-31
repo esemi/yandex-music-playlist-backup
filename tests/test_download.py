@@ -3,6 +3,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pytest
+from app import refresh
 from app.refresh import Track, _download_tracks, _save_tracks_to_csv, _track_filename
 from pytest_mock import MockerFixture
 
@@ -39,13 +40,34 @@ async def test_download_tracks_downloads_new(
     raw = [make_yandex_track(track_id='1'), make_yandex_track(track_id='2', title='Other')]
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=raw)
-    mocker.patch('app.refresh.asyncio.sleep')
+    mocker.patch('app.refresh._interruptible_sleep')
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
     assert downloaded == 2
     assert _codec_info(raw[0]).download_async.call_count == 1
     assert _codec_info(raw[1]).download_async.call_count == 1
+
+
+async def test_download_tracks_stops_on_shutdown(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1', '2'])
+    raw = [make_yandex_track(track_id='1'), make_yandex_track(track_id='2', title='Other')]
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=raw)
+    mocker.patch('app.refresh._interruptible_sleep')
+    refresh._shutdown.set()
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 0
+    assert _codec_info(raw[0]).download_async.call_count == 0
 
 
 async def test_download_tracks_skips_existing(
@@ -62,7 +84,7 @@ async def test_download_tracks_skips_existing(
     (tracks_dir / 'user' / 'Artist - Title.mp3').write_bytes(b'')
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
-    mocker.patch('app.refresh.asyncio.sleep')
+    mocker.patch('app.refresh._interruptible_sleep')
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
@@ -82,7 +104,7 @@ async def test_download_tracks_skips_unavailable(
     raw = make_yandex_track(available=False)
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
-    mocker.patch('app.refresh.asyncio.sleep')
+    mocker.patch('app.refresh._interruptible_sleep')
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
@@ -101,7 +123,7 @@ async def test_download_tracks_creates_dest_dir(
     _seed_csv(csv_path, make_track, ['1'])
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[make_yandex_track()])
-    mocker.patch('app.refresh.asyncio.sleep')
+    mocker.patch('app.refresh._interruptible_sleep')
 
     await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
@@ -123,7 +145,7 @@ async def test_download_tracks_timeout_not_counted(
     _codec_info(raw).download_async = mocker.AsyncMock(side_effect=TimedOutError())
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
-    mocker.patch('app.refresh.asyncio.sleep')
+    mocker.patch('app.refresh._interruptible_sleep')
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 

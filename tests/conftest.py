@@ -1,11 +1,20 @@
 """Shared fixtures for the test suite."""
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from datetime import datetime
 from pathlib import Path
 
 import pytest
+from app import refresh
 from app.refresh import Track
 from pytest_mock import MockerFixture
+
+
+@pytest.fixture(autouse=True)
+def _reset_shutdown() -> Iterator[None]:
+    """Keep the module-level shutdown flag clean between tests."""
+    refresh._shutdown.clear()
+    yield
+    refresh._shutdown.clear()
 
 
 @pytest.fixture
