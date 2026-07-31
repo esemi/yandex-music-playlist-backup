@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     logs_dir: Path = _ROOT_DIR / 'logs'
     tracks_dir: Path = _ROOT_DIR / 'tracks'
     playlists_dir: Path = _ROOT_DIR / 'playlists'
+    yandex_token: str | None = None
 
 
 app_settings = Settings()

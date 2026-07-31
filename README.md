@@ -31,13 +31,14 @@ poetry install
 ### Usage
 
 ```text
-python -m app -u <username> [-x <proxy>]
+python -m app -u <username> [-x <proxy>] [-d]
 ```
 
 | Flag | Long | Required | Description |
 | --- | --- | --- | --- |
 | `-u` | `--username` | yes | Username of the playlist owner whose likes are backed up |
 | `-x` | `--proxy` | no | Proxy `host:port`, e.g. `127.0.0.1:1080` — use it when running outside Russia |
+| `-d` | `--download` | no | Download liked tracks as mp3 into `<tracks_dir>/<username>/`, skipping files already on disk |
 
 ### Examples
 
@@ -47,6 +48,9 @@ python -m app -u esemyon
 
 # same, but through a SOCKS/HTTP proxy (required outside Russia)
 python -m app -u esemyon -x 127.0.0.1:1080
+
+# back up AND download new tracks as mp3
+python -m app -u esemyon -x 127.0.0.1:1080 --download
 
 # long-form flags
 python -m app --username esemyon --proxy 127.0.0.1:1080
@@ -58,8 +62,12 @@ python -m app --username esemyon --proxy 127.0.0.1:1080
 ```
 
 ### TODO
-[ ] добавить выкачивание треков с яндекса
-[ ] добавить выкачивание треков с ютюба
-[ ] качать только то чего нет на диске
+[x] добавить выкачивание треков с яндекса (флаг --download)
+[x] качать только то чего нет на диске
+[ ] flock to docs
+[ ] signal catch
+[ ] [качать флаки](https://github.com/llistochek/yandex-music-downloader)
+[ ] ускорить скачивание
 [ ] добавить доки по рсинку на плеер
+[ ] добавить выкачивание треков с ютюба
 [ ] переделываем в десктоп апку?

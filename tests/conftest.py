@@ -33,3 +33,35 @@ def playlists_dir(tmp_path: Path, mocker: MockerFixture) -> Path:
     """Point app_settings.playlists_dir at an isolated temp dir for the test."""
     mocker.patch('app.refresh.app_settings.playlists_dir', tmp_path)
     return tmp_path
+
+
+@pytest.fixture
+def tracks_dir(tmp_path: Path, mocker: MockerFixture) -> Path:
+    """Point app_settings.tracks_dir at an isolated temp dir for the test."""
+    mocker.patch('app.refresh.app_settings.tracks_dir', tmp_path)
+    return tmp_path
+
+
+@pytest.fixture
+def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
+    """Factory for a mocked yandex_music Track (raw API object)."""
+    def _make(
+        track_id: str = '1',
+        artist: str = 'Artist',
+        title: str = 'Title',
+        available: bool = True,
+    ) -> object:
+        codec_info = mocker.MagicMock()
+        codec_info.codec = 'mp3'
+        codec_info.bitrate_in_kbps = 192
+        codec_info.download_async = mocker.AsyncMock()
+
+        track = mocker.MagicMock()
+        track.id = track_id
+        track.title = title
+        track.available = available
+        track.artists = [mocker.MagicMock()]
+        track.artists[0].name = artist
+        track.get_download_info_async = mocker.AsyncMock(return_value=[codec_info])
+        return track
+    return _make

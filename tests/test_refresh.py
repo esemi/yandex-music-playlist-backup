@@ -61,30 +61,32 @@ def _patch_liked(mocker: MockerFixture, tracks: list[Track]) -> None:
 
 async def test_refresh_playlist_initial_run(
     make_track: Callable[..., Track],
-    playlists_dir: Path,
+    tmp_path: Path,
     mocker: MockerFixture,
 ) -> None:
+    csv_path = tmp_path / 'user.csv'
     actual = [make_track(track_id='1'), make_track(track_id='2')]
     _patch_liked(mocker, actual)
     client = mocker.MagicMock()
 
-    added, deleted = await _refresh_playlist(client, owner_id='user')
+    added, deleted = await _refresh_playlist(client, owner_id='user', csv_path=csv_path)
 
     assert {track.track_id for track in added} == {'1', '2'}
     assert deleted == []
-    assert (playlists_dir / 'user.csv').exists()
+    assert csv_path.exists()
 
 
 async def test_refresh_playlist_added(
     make_track: Callable[..., Track],
-    playlists_dir: Path,
+    tmp_path: Path,
     mocker: MockerFixture,
 ) -> None:
-    _save_tracks_to_csv([make_track(track_id='1')], playlists_dir / 'user.csv')
+    csv_path = tmp_path / 'user.csv'
+    _save_tracks_to_csv([make_track(track_id='1')], csv_path)
     _patch_liked(mocker, [make_track(track_id='1'), make_track(track_id='2')])
     client = mocker.MagicMock()
 
-    added, deleted = await _refresh_playlist(client, owner_id='user')
+    added, deleted = await _refresh_playlist(client, owner_id='user', csv_path=csv_path)
 
     assert [track.track_id for track in added] == ['2']
     assert deleted == []
@@ -92,17 +94,15 @@ async def test_refresh_playlist_added(
 
 async def test_refresh_playlist_deleted(
     make_track: Callable[..., Track],
-    playlists_dir: Path,
+    tmp_path: Path,
     mocker: MockerFixture,
 ) -> None:
-    _save_tracks_to_csv(
-        [make_track(track_id='1'), make_track(track_id='2')],
-        playlists_dir / 'user.csv',
-    )
+    csv_path = tmp_path / 'user.csv'
+    _save_tracks_to_csv([make_track(track_id='1'), make_track(track_id='2')], csv_path)
     _patch_liked(mocker, [make_track(track_id='1')])
     client = mocker.MagicMock()
 
-    added, deleted = await _refresh_playlist(client, owner_id='user')
+    added, deleted = await _refresh_playlist(client, owner_id='user', csv_path=csv_path)
 
     assert added == []
     assert [track.track_id for track in deleted] == ['2']
@@ -110,15 +110,16 @@ async def test_refresh_playlist_deleted(
 
 async def test_refresh_playlist_deleted_marks_is_deleted_in_csv(
     make_track: Callable[..., Track],
-    playlists_dir: Path,
+    tmp_path: Path,
     mocker: MockerFixture,
 ) -> None:
-    _save_tracks_to_csv([make_track(track_id='1')], playlists_dir / 'user.csv')
+    csv_path = tmp_path / 'user.csv'
+    _save_tracks_to_csv([make_track(track_id='1')], csv_path)
     _patch_liked(mocker, [])
     client = mocker.MagicMock()
 
-    await _refresh_playlist(client, owner_id='user')
-    persisted = _get_tracks_from_csv(playlists_dir / 'user.csv')
+    await _refresh_playlist(client, owner_id='user', csv_path=csv_path)
+    persisted = _get_tracks_from_csv(csv_path)
 
     assert len(persisted) == 1
     assert persisted[0].is_deleted is True
@@ -126,18 +127,16 @@ async def test_refresh_playlist_deleted_marks_is_deleted_in_csv(
 
 async def test_refresh_playlist_restored(
     make_track: Callable[..., Track],
-    playlists_dir: Path,
+    tmp_path: Path,
     mocker: MockerFixture,
 ) -> None:
-    _save_tracks_to_csv(
-        [make_track(track_id='1', is_deleted=True)],
-        playlists_dir / 'user.csv',
-    )
+    csv_path = tmp_path / 'user.csv'
+    _save_tracks_to_csv([make_track(track_id='1', is_deleted=True)], csv_path)
     _patch_liked(mocker, [make_track(track_id='1', is_deleted=False)])
     client = mocker.MagicMock()
 
-    added, deleted = await _refresh_playlist(client, owner_id='user')
-    persisted = _get_tracks_from_csv(playlists_dir / 'user.csv')
+    added, deleted = await _refresh_playlist(client, owner_id='user', csv_path=csv_path)
+    persisted = _get_tracks_from_csv(csv_path)
 
     assert added == []
     assert deleted == []
@@ -146,14 +145,15 @@ async def test_refresh_playlist_restored(
 
 async def test_refresh_playlist_no_changes(
     make_track: Callable[..., Track],
-    playlists_dir: Path,
+    tmp_path: Path,
     mocker: MockerFixture,
 ) -> None:
-    _save_tracks_to_csv([make_track(track_id='1')], playlists_dir / 'user.csv')
+    csv_path = tmp_path / 'user.csv'
+    _save_tracks_to_csv([make_track(track_id='1')], csv_path)
     _patch_liked(mocker, [make_track(track_id='1')])
     client = mocker.MagicMock()
 
-    added, deleted = await _refresh_playlist(client, owner_id='user')
+    added, deleted = await _refresh_playlist(client, owner_id='user', csv_path=csv_path)
 
     assert added == []
     assert deleted == []

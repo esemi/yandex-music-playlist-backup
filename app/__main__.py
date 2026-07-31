@@ -21,6 +21,11 @@ def _parse_args() -> argparse.Namespace:
         default=None,
         help='Proxy server <example: 127.0.0.1:1080>',
     )
+    parser.add_argument(
+        '-d', '--download',
+        action='store_true',
+        help='Download liked tracks as mp3 into the tracks dir (skips ones already on disk)',
+    )
     return parser.parse_args()
 
 
@@ -34,4 +39,5 @@ if __name__ == '__main__':
     asyncio.run(main(
         playlist_owner=args.username,
         proxy_server=args.proxy,
+        download=args.download,
     ))

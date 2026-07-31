@@ -1,17 +1,29 @@
 """Module for backing up Yandex Music playlist tracks."""
+import asyncio
 import csv
 import logging
 import os
+import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
 from yandex_music import ClientAsync, TracksList
+from yandex_music.exceptions import TimedOutError
 from yandex_music.utils.request_async import Request
 
 from app.settings import app_settings
 
 logger = logging.getLogger(__name__)
+
+_FILENAME_UNSAFE = re.compile(r'[\\/:*?"<>|]+')
+
+
+def _track_filename(artist: str, title: str) -> str:
+    """Build a filesystem-safe `<artist> - <title>.mp3` name."""
+    raw = f'{artist} - {title}'
+    safe = _FILENAME_UNSAFE.sub('_', raw).strip()
+    return f'{safe}.mp3'
 
 
 @dataclass
@@ -31,32 +43,44 @@ class Track:
 async def main(
     playlist_owner: str,
     proxy_server: str | None = None,  # if you are running outside from Russian-related countries
+    download: bool = False,
 ) -> None:
     """Main function."""
     request = Request(proxy_url=f'http://{proxy_server}') if proxy_server else None
-    client = await ClientAsync(request=request).init()
+    client = await ClientAsync(request=request, token=app_settings.yandex_token).init()
 
-    added_tracks, deleted_tracks = await _refresh_playlist(client, owner_id=playlist_owner)
+    csv_path = app_settings.playlists_dir / f'{playlist_owner}.csv'
+
+    logger.info('Sync started')
+    added_tracks, deleted_tracks = await _refresh_playlist(client, owner_id=playlist_owner, csv_path=csv_path)
 
     if added_tracks:
-        logger.info('\nAdded tracks:')
+        logger.info('Added tracks:')
         for track in added_tracks:
             logger.info(f'  + {track.artist} - {track.title}')
 
     if deleted_tracks:
-        logger.info('\nDeleted tracks:')
+        logger.info('Deleted tracks:')
         for track in deleted_tracks:
             logger.info(f'  - {track.artist} - {track.title}')
 
     if not (added_tracks or deleted_tracks):
         logger.info('No changes detected')
 
+    logger.info('Sync completed')
+
+    if download:
+        logger.info('Downloading started')
+        downloaded = await _download_tracks(client, owner_id=playlist_owner, csv_path=csv_path)
+        logger.info(f'Downloaded {downloaded} new track(s)')
+        logger.info('Downloading completed')
+
 
 async def _refresh_playlist(
     client: ClientAsync,
     owner_id: str,
+    csv_path: Path,
 ) -> tuple[list[Track], list[Track]]:
-    csv_path = app_settings.playlists_dir / f'{owner_id}.csv'
     try:
         existing_tracks: list[Track] = _get_tracks_from_csv(csv_path)
     except RuntimeError:
@@ -123,6 +147,52 @@ async def _get_liked_tracks(client: ClientAsync, owner_id: str) -> list[Track]:
         )
         for track in raw_tracks
     ]
+
+
+async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -> int:
+    """Download liked tracks as mp3 into `dest_dir`, skipping ones already on disk.
+
+    Returns the number of freshly downloaded files.
+    """
+    dest_dir = app_settings.tracks_dir / owner_id
+    dest_dir.mkdir(exist_ok=True)
+
+    existing_tracks: list[Track] = _get_tracks_from_csv(csv_path)
+    logger.info(f'got {len(existing_tracks)} tracks from playlist')
+
+    # load tracks by API
+    raw_tracks = await client.tracks(track_ids=[
+        track.track_id
+        for track in existing_tracks
+    ])
+
+    downloaded = 0
+    for track in raw_tracks:
+        if not track.available:
+            logger.info(f'skip unavailable {track.title}')
+            continue
+
+        artist = ', '.join(artist.name for artist in track.artists)
+        target = dest_dir / _track_filename(artist, track.title)
+        if target.exists():
+            logger.debug(f'skip existing {target.name}')
+            continue
+
+        try:
+            codec_info = (await track.get_download_info_async(timeout=10))[-1]
+            logger.info(f'downloading {target} {codec_info.codec} {codec_info.bitrate_in_kbps}')
+            await codec_info.download_async(str(target), timeout=25)
+            logger.info('downloading success')
+
+        except TimedOutError as exc:
+            logger.warning(f'downloading failed {exc}')
+
+        else:
+            downloaded += 1
+
+        await asyncio.sleep(2)
+
+    return downloaded
 
 
 def _get_tracks_from_csv(csv_path: Path) -> list[Track]:

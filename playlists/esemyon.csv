@@ -170,8 +170,8 @@ track_id,artist,title,added_at,is_deleted
 108872647,Мама Аси,Про собаку,2026-05-07T21:02:03.181181,0
 108909895,Spaceking,Ruins II,2026-04-14T14:02:03.190445,0
 109113646,Летающие звери,Весёлый пёс,2026-05-08T18:02:05.009385,0
-109142252,"Ирина Богушевская, Андрей Усачев, Александр Пинегин, Светлана Мочалина",Зимняя колыбельная кузнечику,2026-01-06T18:02:02.350869,1
-109142265,"Александр Пинегин, Андрей Усачев, Кира Смирнова, Михаил Самойлов, Пётр Синявский, Светлана Коротеева",Сороконожка,2025-06-13T13:02:02.267985,1
+109142252,"Ирина Богушевская, Андрей Усачев, Александр Пинегин, Светлана Мочалина",Зимняя колыбельная кузнечику,2026-01-06T18:02:02.350869,0
+109142265,"Александр Пинегин, Андрей Усачев, Кира Смирнова, Михаил Самойлов, Пётр Синявский, Светлана Коротеева",Сороконожка,2025-06-13T13:02:02.267985,0
 110066183,GALAGA,Доктор бухло,2025-04-22T18:12:52.158135,0
 110066187,GALAGA,Рэп - говно,2025-04-22T18:12:52.158135,0
 110066191,GALAGA,Сектор газа,2025-04-22T18:12:52.158135,0
@@ -716,6 +716,8 @@ track_id,artist,title,added_at,is_deleted
 17199284,Twisted Sister,Burn in Hell,2025-04-22T18:12:52.158135,0
 1722304,Against Me!,Stop!,2025-04-22T18:12:52.158135,0
 17241271,KONGOS,Come with Me Now,2025-04-22T18:12:52.158135,0
+17241279,KONGOS,I'm Only Joking,2026-07-31T00:30:42.102527,0
+17241282,KONGOS,Hey I Don't Know,2026-07-31T00:30:42.102527,0
 17243327,Wanda Jackson,Funnel of Love,2025-04-22T18:12:52.158135,0
 17301595,Five Finger Death Punch,House of The Rising Sun,2025-04-22T18:12:52.158135,0
 1730663,"Blue Man Group, Chris Wink, Phil Stanton, Dan Goldman.",I Feel Love,2025-04-22T18:12:52.158135,0
@@ -764,6 +766,7 @@ track_id,artist,title,added_at,is_deleted
 17926941,Powerman 5000,How To Be A Human,2025-04-22T18:12:52.158135,0
 17927364,"Мумий Тролль, Linda Leen, Tana Kay",Медведица,2025-04-22T18:12:52.158135,0
 17945406,"peaceTreaty, Arem Ozguc",Titus,2025-04-22T18:12:52.158135,0
+179461,System of A Down,B.Y.O.B. (Explicit Album Version),2026-07-31T00:30:42.102527,0
 18027405,Ruoska,Käärmeenpesä,2025-04-22T18:12:52.158135,0
 18027414,Ruoska,Puhe,2025-04-22T18:12:52.158135,0
 18033059,Goon,Big Beat,2025-04-22T18:12:52.158135,0
@@ -781,11 +784,13 @@ track_id,artist,title,added_at,is_deleted
 18371479,Dust Bolt,Agent Thrash,2025-04-22T18:12:52.158135,0
 18371481,DUST BOLT,Beneath the Earth,2026-05-21T16:02:03.204456,0
 18385776,"Timmy Trumpet, Savage",Freaks,2025-04-22T18:12:52.158135,0
+18399312,Judas Priest,Cold Blooded,2026-07-31T00:30:42.102527,0
 18562866,Godsmack,1000hp,2025-04-22T18:12:52.158135,0
 18853,Eminem,Just Lose It,2025-04-22T18:12:52.158135,0
 18855,Eminem,Without Me,2025-04-22T18:12:52.158135,0
 18857,Eminem,The Real Slim Shady,2025-04-22T18:12:52.158135,0
 18860,Eminem,Lose Yourself,2025-04-22T18:12:52.158135,0
+18870188,AronChupa,I'm an Albatraoz,2026-07-31T00:30:42.102527,0
 18873,Eminem,My Name Is,2025-04-22T18:12:52.158135,0
 18989274,Рабфак,Калашников,2025-04-22T18:12:52.158135,0
 19060001,Tennessee Ernie Ford,16 Tons,2025-04-22T18:12:52.158135,0
@@ -796,6 +801,9 @@ track_id,artist,title,added_at,is_deleted
 19181572,Лиза Арзамасова,Небо крыльями обнять,2025-05-03T18:02:02.491378,1
 19200901,Godsmack,Something Different,2026-03-27T17:02:03.028143,0
 19200905,Godsmack,FML,2025-04-22T18:12:52.158135,0
+19212785,Ozzy Osbourne,The Almighty Dollar,2026-07-31T00:30:42.102527,0
+19212789,Ozzy Osbourne,Countdown's Begun,2026-07-31T00:30:42.102527,0
+19212791,Ozzy Osbourne,Trap Door,2026-07-31T00:30:42.102527,0
 19215164,Михаил Башаков,Блюз о Блюзе,2025-04-22T18:12:52.158135,0
 19215166,Михаил Башаков,Русский народный блюз,2025-04-22T18:12:52.158135,0
 19252607,Михаил Башаков,Глубокая радость,2025-04-22T18:12:52.158135,0
@@ -927,6 +935,10 @@ track_id,artist,title,added_at,is_deleted
 2128353,Rosemary Clooney,Mambo Italiano - Original,2025-04-22T18:12:52.158135,0
 21305515,Crisix,Ultra Thrash,2025-04-22T18:12:52.158135,0
 2131122,Dead Kennedys,California Uber Alles,2025-04-22T18:12:52.158135,0
+2140526,Die Happy,Survivor,2026-07-31T00:30:42.102527,0
+2141081,Jay Smith,Enter Sandman,2026-07-31T00:30:42.102527,0
+21412724,Eisbrecher,"Himmel, Arsch und Zwirn",2026-07-31T00:30:42.102527,0
+21412732,Eisbrecher,So oder so,2026-07-31T00:30:42.102527,0
 2142491,Touch And Go,Would You...?,2025-04-22T18:12:52.158135,0
 2143437,Crazy Frog,Axel f radio mix,2025-04-22T18:12:52.158135,0
 214348,Regina Spektor,Après Moi,2025-04-22T18:12:52.158135,0
@@ -935,6 +947,7 @@ track_id,artist,title,added_at,is_deleted
 2145535,Кипелов,Дыханье тьмы,2025-04-22T18:12:52.158135,0
 2145536,Кипелов,Матричный Бог,2025-04-22T18:12:52.158135,0
 2145537,Кипелов,Наважденье,2025-04-22T18:12:52.158135,0
+2145687,Turisas,Rasputin,2026-07-31T00:30:42.102527,0
 21459384,Infected Mushroom,Kazabubu,2025-04-22T18:12:52.158135,0
 21477027,Marilyn Manson,Deep Six,2025-04-22T18:12:52.158135,0
 215042,"Orgy, Chris Lord-Alge",Blue Monday,2025-04-22T18:12:52.158135,0
@@ -1002,6 +1015,7 @@ track_id,artist,title,added_at,is_deleted
 2218204,Куба,Маленькое счастье,2025-04-22T18:12:52.158135,0
 2218446,Joan Jett & the Blackhearts,I Love Rock 'N Roll,2026-02-04T13:02:02.668486,0
 2219512,Ozzy Osbourne,Crazy Train,2025-06-04T11:02:02.759742,0
+2219517,Ozzy Osbourne,No Bone Movies,2026-07-31T00:30:42.102527,0
 22207942,BRUTTO,Партизан рок,2025-04-22T18:12:52.158135,0
 22432135,Скворцы Степанова,Котэ,2025-04-22T18:12:52.158135,0
 22436667,"Kyle Cousins, Vinny Appice, Hugh McDonald, Barry Goudreau",Heaven and Hell,2025-05-29T21:02:02.629272,0
@@ -1038,7 +1052,7 @@ track_id,artist,title,added_at,is_deleted
 23458459,SOFT PLAY,Cheer Up London,2025-04-22T18:12:52.158135,0
 23461807,Stone Sour,Creeping Death,2025-04-22T18:12:52.158135,0
 234701,MC Hammer,U Can't Touch This,2025-04-22T18:12:52.158135,0
-234708,House Of Pain,Jump Around,2025-04-22T18:12:52.158135,1
+234708,House Of Pain,Jump Around,2025-04-22T18:12:52.158135,0
 2347643,Louis Armstrong,Go Down Moses,2025-04-22T18:12:52.158135,0
 23596872,Телевизор,Твой папа – фашист,2025-04-22T18:12:52.158135,1
 23618726,Accept,Time Machine,2025-04-22T18:12:52.158135,0
@@ -1083,8 +1097,14 @@ track_id,artist,title,added_at,is_deleted
 24279172,Shinedown,Cut the Cord,2025-04-22T18:12:52.158135,0
 24300894,Stahlmann,Plasma,2025-04-22T18:12:52.158135,0
 24327639,AC/DC,T.N.T.,2025-04-22T18:12:52.158135,0
+24327708,AC/DC,War Machine,2026-07-31T00:30:42.102527,0
+24327738,AC/DC,Burnin' Alive,2026-07-31T00:30:42.102527,0
 24327739,AC/DC,Hail Caesar,2025-05-14T16:02:02.126500,0
 24327743,AC/DC,Ballbreaker,2025-05-14T16:02:02.126500,0
+24327748,AC/DC,Safe in New York City,2026-07-31T00:30:42.102527,0
+24327753,AC/DC,Come and Get It,2026-07-31T00:30:42.102527,0
+24327764,AC/DC,Stormy May Day,2026-07-31T00:30:42.102527,0
+24327769,AC/DC,Black Ice,2026-07-31T00:30:42.102527,0
 24327906,AC/DC,Dirty Deeds Done Dirt Cheap,2025-04-22T18:12:52.158135,0
 24366168,Document One,I Got a Fever,2025-04-22T18:12:52.158135,0
 24385983,Пилот,Большой Питерский Блюз,2025-04-22T18:12:52.158135,0
@@ -1130,6 +1150,7 @@ track_id,artist,title,added_at,is_deleted
 2524794,Psychostick,Sadface :(,2025-04-22T18:12:52.158135,1
 25294453,Annihilator,Dr. Psycho,2025-12-29T22:02:02.871253,0
 25309801,Traitor,Lords of Lust,2025-11-05T13:02:02.938644,0
+25399896,Angel Dust,Nightmare,2026-07-31T00:30:42.102527,0
 25412635,Mass Hysteria,L'enfer des dieux,2025-04-22T18:12:52.158135,0
 2542603,Jorn,Starfire,2025-04-22T18:12:52.158135,0
 25427084,Ляпис Трубецкой,Капитал,2025-04-22T18:12:52.158135,0
@@ -1162,6 +1183,7 @@ track_id,artist,title,added_at,is_deleted
 25692006,Newlux,Johnny,2025-04-22T18:12:52.158135,0
 2569295,U.D.O.,Dominator,2025-04-22T18:12:52.158135,0
 2569309,Manimal,Spinegrinder,2025-04-22T18:12:52.158135,0
+2569523,Eisbrecher,Supermodel,2026-07-31T00:30:42.102527,0
 25707,Louis Armstrong and His Orchestra,La Vie En Rose,2025-04-22T18:12:52.158135,0
 25735784,Ляпис Трубецкой,Африка,2025-04-22T18:12:52.158135,0
 25735787,Ляпис Трубецкой,Принцесса,2025-04-22T18:12:52.158135,0
@@ -1226,6 +1248,7 @@ track_id,artist,title,added_at,is_deleted
 26834357,Joe Bonamassa,How Deep This River Runs,2025-04-22T18:12:52.158135,0
 2686090,Alice Cooper,Last Man On Earth,2025-04-22T18:12:52.158135,0
 26876390,Lords of Black,Ghost of You,2025-06-04T12:02:03.069480,0
+26917421,"AronChupa, Little Sis Nora",Little Swing,2026-07-31T00:30:42.102527,0
 269820,Caparezza,Dalla Parte Del Toro,2026-05-26T19:02:04.074345,0
 27014686,The Ventures,Pipeline,2025-04-22T18:12:52.158135,0
 27032843,PAIN,Shut Your Mouth,2025-04-22T18:12:52.158135,0
@@ -1276,6 +1299,8 @@ track_id,artist,title,added_at,is_deleted
 2786210,Би-2,Вечная призрачная встречная,2025-04-22T18:12:52.158135,0
 27877730,Die Toten Hosen,Das Model,2025-04-22T18:12:52.158135,0
 27877734,Die Toten Hosen,Rock Me Amadeus,2025-04-22T18:12:52.158135,0
+2789379,Accept,Run Through The Night,2026-07-31T00:30:42.102527,0
+27984410,Avatar,The Eagle Has Landed,2026-07-31T00:30:42.102527,0
 279885,Breaking Benjamin,So Cold,2025-04-22T18:12:52.158135,0
 2799035,Ария,Аттила,2025-10-08T13:02:03.115596,0
 28036303,Scorpions,Bad Boys Running Wild,2025-04-22T18:12:52.158135,0
@@ -1367,6 +1392,9 @@ track_id,artist,title,added_at,is_deleted
 29261011,Jeff Beck,Live in the Dark,2025-04-22T18:12:52.158135,0
 29386326,Messa,Hour of the Wolf,2025-04-22T18:12:52.158135,0
 29456722,Saliva,They Don't Care About Us,2025-04-22T18:12:52.158135,0
+29470007,KONGOS,Autocorrect,2026-07-31T00:30:42.102527,0
+29470011,KONGOS,Birds Do It,2026-07-31T00:30:42.102527,0
+29470024,KONGOS,Repeat After Me,2026-07-31T00:30:42.102527,0
 29598562,Женя Любич,Russian Girl,2025-04-22T18:12:52.158135,0
 296299,Depeche Mode,Personal Jesus,2025-04-22T18:12:52.158135,0
 29674912,Jeff Beck,Right Now,2025-04-22T18:12:52.158135,0
@@ -1420,6 +1448,7 @@ track_id,artist,title,added_at,is_deleted
 31194987,Gost,Reign in Hell (Extended),2025-04-22T18:12:52.158135,0
 31240915,Night Club,Freak Like Me,2025-04-22T18:12:52.158135,0
 31242476,Amen 78,Обходи,2025-04-22T18:12:52.158135,0
+31255466,Urge Overkill,"Girl, You'll Be A Woman Soon",2026-07-31T00:30:42.102527,0
 31273770,"SOFT PLAY, Mike D.",Consume Or Be Consumed,2025-04-22T18:12:52.158135,0
 31279975,Tracktor Bowling,Трактор,2025-04-22T18:12:52.158135,0
 31380995,Джин-Тоник,Рок-музыканты,2025-04-22T18:12:52.158135,0
@@ -1597,6 +1626,7 @@ track_id,artist,title,added_at,is_deleted
 34139530,Сплин,Романс,2025-04-22T18:12:52.158135,0
 34175277,Ундервуд,"Гагарин, я вас любила",2025-04-22T18:12:52.158135,0
 34220585,Mothership,Wise Man,2026-04-28T12:02:06.292733,0
+34276858,"DJ Fresh, Ms. Dynamite",Gold Dust,2026-07-31T00:30:42.102527,0
 34284828,Дельфин,Я люблю людей,2025-04-22T18:12:52.158135,0
 34290806,Ударная волна,Живая кукла,2026-01-24T12:02:02.324696,0
 34290815,Ударная волна,Дьяволица,2025-04-22T18:12:52.158135,0
@@ -1659,6 +1689,7 @@ track_id,artist,title,added_at,is_deleted
 35581528,Декабрь,Мы не оставим города свои,2025-04-22T18:12:52.158135,0
 35581535,Декабрь,На братских могилах,2025-04-22T18:12:52.158135,0
 35608922,BY Effect,Легион 2012,2025-04-22T18:12:52.158135,0
+35609710,Eisbrecher,Was ist hier los?,2026-07-31T00:30:42.102527,0
 3567,Metallica,"Broken, Beat & Scarred",2025-04-22T18:12:52.158135,0
 35720983,Муслим Магомаев,Лучший город Земли,2025-04-22T18:12:52.158135,0
 35726200,Pig,Prey & Obey,2025-04-22T18:12:52.158135,0
@@ -1692,6 +1723,7 @@ track_id,artist,title,added_at,is_deleted
 36418322,Goatess,Silent War,2025-08-18T15:02:02.758497,0
 36422106,Loikaemie,Good Night,2025-04-22T18:12:52.158135,0
 36434646,Дайте два,Джекилл и Хайд,2025-04-22T18:12:52.158135,0
+36438291,Eisbrecher,Das Gesetz,2026-07-31T00:30:42.102527,0
 36440138,Hämatom,El Mariachi,2025-04-22T18:12:52.158135,0
 36442488,Jackyl,I Stand Alone,2025-04-22T18:12:52.158135,0
 36465285,Lords Of Acid,Scrood bi U,2026-02-05T14:02:02.777534,0
@@ -1820,9 +1852,11 @@ track_id,artist,title,added_at,is_deleted
 3853787,Король и Шут,Танец злобного гения,2025-04-22T18:12:52.158135,0
 3853792,Король и Шут,Фокусник,2025-04-22T18:12:52.158135,0
 38544648,Монгол Шуудан,Финский нож,2025-04-22T18:12:52.158135,0
+3859652,Dream Evil,The Book Of Heavy Metal (march Of Metallians),2026-07-31T00:30:42.102527,0
 38602172,Moscow Death Brigade,Renegade Stomp,2025-04-22T18:12:52.158135,0
 38620927,Stone Fury,Break Down The Wall,2025-08-19T14:02:03.015924,0
 38634578,КИНО,Пачка сигарет,2025-04-22T18:12:52.158135,0
+38646012,Pink Floyd,"Another Brick In The Wall, Part 2",2026-07-31T00:30:42.102527,0
 387232,"Mark Keali'i Ho'omalu, Kamehameha Schools Children's Chorus",Hawaiian Roller Coaster Ride,2025-06-15T16:02:02.647806,1
 3872540,Kabát,Corrida,2025-04-22T18:12:52.158135,0
 38772777,Testament,Disciples Of The Watch,2025-04-22T18:12:52.158135,0
@@ -1887,9 +1921,12 @@ track_id,artist,title,added_at,is_deleted
 39297714,Включай Микрофон!,Пусть гуманисты спорят,2025-04-22T18:12:52.158135,0
 39298800,Planet of Zeus,The Great Dandolos,2025-04-22T18:12:52.158135,0
 3930114,Обе-Рек,Призраки,2025-04-22T18:12:52.158135,0
+39358856,Judas Priest,Never The Heroes,2026-07-31T00:30:42.102527,0
 39372090,Prima Nocta,Ötzi,2025-04-22T18:12:52.158135,0
 39412260,Lumen,Sid & Nancy,2025-04-22T18:12:52.158135,0
 39412263,Lumen,Государство,2025-04-22T18:12:52.158135,1
+39416384,Judas Priest,Children of the Sun,2026-07-31T00:30:42.102527,0
+39416390,Judas Priest,No Surrender,2026-07-31T00:30:42.102527,0
 39450213,Moon Hooch,Acid Mountain,2025-04-22T18:12:52.158135,0
 39450215,Moon Hooch,Growing Up,2025-04-22T18:12:52.158135,0
 39456369,Traitor,Mad Dictator,2025-04-22T18:12:52.158135,0
@@ -1997,6 +2034,7 @@ track_id,artist,title,added_at,is_deleted
 41748026,Jardano Bruno,Альтернатива альтернативе,2025-04-22T18:12:52.158135,0
 4181840,Saint Motel,Puzzle Pieces,2025-04-22T18:12:52.158135,0
 41866229,The Prodigy,Need Some1,2025-04-22T18:12:52.158135,0
+41868070,Jain,Star,2026-07-31T00:30:42.102527,0
 419178,Shinedown,Junkies for Fame,2025-04-22T18:12:52.158135,0
 41919485,Lucky Chops,These Tears,2025-04-22T18:12:52.158135,0
 419260,Kid Rock,So Hott,2025-04-22T18:12:52.158135,0
@@ -2015,9 +2053,11 @@ track_id,artist,title,added_at,is_deleted
 42363612,Rammstein,Wollt Ihr Das Bett In Flammen Sehen,2025-04-22T18:12:52.158135,0
 42383068,Cheese People,Big Deal,2025-04-22T18:12:52.158135,0
 42386423,"Tom Morello, Knife Party",Battle Sirens,2025-04-22T18:12:52.158135,0
+4239476,Eisbrecher,Eiskalt Erwischt,2026-07-31T00:30:42.102527,0
 4240541,(Hed) P.E.,Walk On By,2025-04-22T18:12:52.158135,0
 42430604,Cheese People,Ua-a-a!,2025-04-22T18:12:52.158135,0
 42430608,Cheese People,Wake Up,2025-04-22T18:12:52.158135,0
+42477658,Jade Bird,Uh Huh,2026-07-31T00:30:42.102527,0
 4251950,"Chinese Man, Taiwan MC, Cyph4",Miss Chang,2025-04-22T18:12:52.158135,0
 4251977,"Chinese Man, Bionic Man Sound",Washington Square,2025-04-22T18:12:52.158135,0
 4253218,Los Colorados,I Like to Move It,2025-04-22T18:12:52.158135,0
@@ -2080,7 +2120,9 @@ track_id,artist,title,added_at,is_deleted
 43527035,Потомучто,Долго и счастливо,2025-04-22T18:12:52.158135,0
 43528617,Znaki,Фантастика,2025-04-22T18:12:52.158135,0
 43567270,The Prodigy,Light Up the Sky,2025-05-23T11:02:02.859411,0
+43567540,Bakermat,Partystarter,2026-07-31T00:30:42.102527,0
 435956,Fischerspooner,Never Win,2025-04-22T18:12:52.158135,0
+4362295,Tenacious D,Roadie,2026-07-31T00:30:42.102527,0
 436496,Andy Hunter,Come On,2025-04-22T18:12:52.158135,0
 43682532,Научно-технический рэп,Папа может в си,2025-04-22T18:12:52.158135,0
 43683056,Metal Church,Guillotine,2025-04-22T18:12:52.158135,0
@@ -2089,6 +2131,7 @@ track_id,artist,title,added_at,is_deleted
 43724241,Научно-технический рэп,Х.Х. и в продакшн,2025-04-22T18:12:52.158135,0
 4375500,Marilyn Manson,No Reflection,2026-05-14T00:02:03.627349,0
 43794788,Jäde,Pulp Friction,2025-04-22T18:12:52.158135,0
+4383829,Judas Priest,Revelations,2026-07-31T00:30:42.102527,0
 43840896,Jäde,TV Says,2025-04-22T18:12:52.158135,0
 43840898,Jäde,Man Eating Lizard Dragon,2025-04-22T18:12:52.158135,0
 43840901,Jäde,Spy Car,2025-04-22T18:12:52.158135,0
@@ -2105,6 +2148,7 @@ track_id,artist,title,added_at,is_deleted
 44034047,Ария,Колизей,2025-04-22T18:12:52.158135,0
 44041472,The Jack Wood,Prophecy,2025-04-22T18:12:52.158135,0
 44064599,"Groove Delight, Gustavo Mota",Fire,2025-04-22T18:12:52.158135,0
+44104364,Måneskin,New Song,2026-07-31T00:30:42.102527,0
 44121937,The Hu,Yuve Yuve Yu,2025-04-22T18:12:52.158135,0
 44126256,ИСПАНСКИЙ СТЫД,Искусство,2025-04-22T18:12:52.158135,0
 44138388,Деградкор,M.i.l.f.ы Древней Греции,2025-04-22T18:12:52.158135,0
@@ -2121,6 +2165,7 @@ track_id,artist,title,added_at,is_deleted
 4440796,The Cambodian Space Project,I'm Sixteen,2025-04-22T18:12:52.158135,0
 44413874,MiatriSs,Yandere Song,2025-04-22T18:12:52.158135,0
 4448009,Emigrate,My World,2025-04-22T18:12:52.158135,0
+44520584,Jade Bird,Love Has All Been Done Before,2026-07-31T00:30:42.102527,0
 44524741,Metallica,Blackened,2025-04-22T18:12:52.158135,0
 44524745,Metallica,Eye of the Beholder,2025-04-22T18:12:52.158135,0
 44524758,Metallica,The Frayed Ends of Sanity,2025-04-22T18:12:52.158135,0
@@ -2237,11 +2282,13 @@ track_id,artist,title,added_at,is_deleted
 46403610,Shakti Loka,Камушками,2025-04-22T18:12:52.158135,0
 46458,Limp Bizkit,Stuck,2025-04-22T18:12:52.158135,0
 46477076,нежность на бумаге,Песенка прокрастинатора,2025-04-22T18:12:52.158135,0
+465060,Depeche Mode,Enjoy The Silence (Reinterpreted by Mike Shinoda),2026-07-31T00:30:42.102527,0
 4651106,Billy Talent,Surprise Surprise,2025-04-22T18:12:52.158135,0
 46533745,De Staat,Pikachu,2025-04-22T18:12:52.158135,0
 46533760,De Staat,Me Time,2025-04-22T18:12:52.158135,0
 46614000,Die Antwoord,Banana Brain,2025-04-22T18:12:52.158135,0
 4662592,Avatar,Smells Like A Freakshow,2025-04-22T18:12:52.158135,0
+4666891,Eisbrecher,Verrückt,2026-07-31T00:30:42.102527,0
 46670212,Shaka Ponk,Smells Like Teen Spirit,2025-04-22T18:12:52.158135,0
 46670378,Shaka Ponk,Gung Ho,2025-04-22T18:12:52.158135,0
 46670381,"Shaka Ponk, Skin, De Staat, KillASon",Rocksta,2025-04-22T18:12:52.158135,0
@@ -2294,7 +2341,12 @@ track_id,artist,title,added_at,is_deleted
 47645964,Бригадный подряд,Короли и герои,2025-04-22T18:12:52.158135,0
 47645965,Бригадный подряд,Девчонки,2025-04-22T18:12:52.158135,0
 47645970,Бригадный подряд,Попса,2025-04-22T18:12:52.158135,0
+47697548,Dream Theater,Fall into the Light,2026-07-31T00:30:42.102527,0
 47741539,Lissie,Electric Eye,2025-08-22T14:02:02.606771,0
+4777235,The Meteors,Never Stop The Hate Train,2026-07-31T00:30:42.102527,0
+4779135,The Meteors,Juggernaut,2026-07-31T00:30:42.102527,0
+4780209,3 Inches Of Blood,Metal Woman,2026-07-31T00:30:42.102527,0
+4780533,Mad Sin,Speak No Evil,2026-07-31T00:30:42.102527,0
 47856523,Коррозия металла,Ритуал сожжения трупов,2025-04-22T18:12:52.158135,0
 478666,Dethklok,Bloodlines,2026-02-11T14:02:02.178742,0
 478671,Dethklok,Murmaider II: The Water God,2025-08-14T18:02:02.415471,0
@@ -2525,6 +2577,7 @@ track_id,artist,title,added_at,is_deleted
 53499435,Asper X,Bad Trip,2025-04-22T18:12:52.158135,0
 53503959,Dubdogz,Techno Prank,2025-04-22T18:12:52.158135,0
 53514543,Cherry Animals,Safe House,2025-04-22T18:12:52.158135,0
+53534163,"Benny Benassi, Chris Nasty",Inside,2026-07-31T08:53:54.288058,0
 53589275,Аборт Мозга,Миром правит любовь,2026-02-17T23:02:03.143855,0
 53609530,Lucky Chops,Halfway to the Hudson,2025-04-22T18:12:52.158135,0
 53609546,Lucky Chops,Mo' Momo!,2025-04-22T18:12:52.158135,0
@@ -2536,6 +2589,7 @@ track_id,artist,title,added_at,is_deleted
 54108647,Caravan Palace,Supersonics,2025-04-22T18:12:52.158135,0
 54155110,Messer Fur Frau Muller,Кошмары,2025-04-22T18:12:52.158135,0
 54155353,Five.Bolt.Main,Pathetic,2025-04-22T18:12:52.158135,0
+54192468,The White Stripes,Catch Hell Blues,2026-07-31T00:30:42.102527,0
 54278929,The Guggenheim Grotto,Wisdom,2026-03-06T13:02:02.299494,0
 54364788,John B,Get Stuffed,2025-04-22T18:12:52.158135,0
 544273,Technotronic,Pump Up The Jam,2025-04-22T18:12:52.158135,0
@@ -2597,6 +2651,7 @@ track_id,artist,title,added_at,is_deleted
 5578717,Ahola,The Spell,2025-05-21T17:02:02.284871,0
 55800367,GREEN CROW,Король фей,2025-04-22T18:12:52.158135,0
 55800378,GREEN CROW,Джон Ячменное Зерно,2025-04-22T18:12:52.158135,0
+558228,Mad Sin,Cursed,2026-07-31T00:30:42.102527,0
 55864750,Скала Фрэглов,Машинист,2025-04-22T18:12:52.158135,0
 55864753,Скала Фрэглов,Ока,2025-04-22T18:12:52.158135,0
 55895167,GREEN CROW,Итальянская джига,2025-04-22T18:12:52.158135,0
@@ -2626,6 +2681,7 @@ track_id,artist,title,added_at,is_deleted
 56569219,Panjabi MC,Jogi,2025-04-22T18:12:52.158135,0
 56613529,Vakabular,Osnovatelnyi Synth,2025-04-22T18:12:52.158135,0
 56651221,Sammy Salvo,A Mushroom Cloud,2025-04-22T18:12:52.158135,0
+56676713,Hämatom,Stressed Out,2026-07-31T00:30:42.102527,0
 56755615,iDOLEAST,When Gotham Is Ashes,2025-04-22T18:12:52.158135,0
 56775521,Debauchery,Let There Be Blood,2025-04-22T18:12:52.158135,0
 56798664,"Knooper, Smacktown",Rage,2025-05-13T12:02:02.598729,0
@@ -2797,6 +2853,7 @@ track_id,artist,title,added_at,is_deleted
 60012756,Туфли Гну,Коктейль Молотова,2025-11-14T18:02:02.132038,1
 60043520,"Lipps, Inc.",Funkytown,2025-04-22T18:12:52.158135,0
 60047480,Nagart,Тайный клуб,2025-04-22T18:12:52.158135,0
+60066972,Ozzy Osbourne,Straight to Hell,2026-07-31T00:30:42.102527,0
 6008433,Jem,24,2025-04-22T18:12:52.158135,0
 60105,Metallica,Am I Evil?,2025-04-22T18:12:52.158135,0
 60109,Metallica,Last Caress / Green Hell,2025-04-22T18:12:52.158135,0
@@ -2820,12 +2877,14 @@ track_id,artist,title,added_at,is_deleted
 60906187,Wolf Rahm,Доктор Смерть,2025-04-22T18:12:52.158135,0
 60906188,Wolf Rahm,Болото,2025-04-22T18:12:52.158135,0
 60919484,Figure,Cowabunga,2025-05-26T13:02:02.844443,0
+609529,Ram Jam,Black Betty,2026-07-31T00:30:42.102527,0
 609572,Judas Priest,Living After Midnight,2025-04-22T18:12:52.158135,0
 609639,Ray Parker Jr.,Ghostbusters,2025-04-22T18:12:52.158135,0
 609644,Dancing Queens,You Spin Me 'Round,2025-04-22T18:12:52.158135,0
 609732,Alice Cooper,Poison,2025-04-22T18:12:52.158135,0
 6098505,Клара Румянова,Улыбка,2025-06-12T23:02:06.193403,0
 610161,Opeth,Blackwater Park,2025-04-22T18:12:52.158135,0
+610185,Scorpions,Raised on Rock,2026-07-31T00:30:42.102527,0
 61025747,Дай Дарогу!,ДСПГ,2025-04-22T18:12:52.158135,0
 61025748,Дай Дарогу!,5 палата,2025-04-22T18:12:52.158135,0
 61025752,Дай Дарогу!,По синему,2025-04-22T18:12:52.158135,0
@@ -2833,6 +2892,7 @@ track_id,artist,title,added_at,is_deleted
 61025764,Дай Дарогу!,Мария Ивановна,2025-04-22T18:12:52.158135,0
 61177,Godsmack,No Rest For The Wicked,2025-04-22T18:12:52.158135,0
 61182,Godsmack,Voodoo Too,2025-04-22T18:12:52.158135,0
+611869,New Politics,Yeah Yeah Yeah,2026-07-31T00:30:42.102527,0
 6119814,Brother Dege (AKA Dege Legg),Too Old To Die Young,2025-04-22T18:12:52.158135,0
 61258670,Пневмослон,"Тёлки, тачки",2025-04-22T18:12:52.158135,0
 61289143,Чёртово колесо инженера Ферриса,Химеры и демоны,2025-04-22T18:12:52.158135,0
@@ -2886,6 +2946,8 @@ track_id,artist,title,added_at,is_deleted
 628214,Michael Jackson,Smooth Criminal,2025-05-14T16:02:02.126500,0
 628320,Michael Jackson,Billie Jean,2025-04-22T18:12:52.158135,0
 628722,Heart,Barracuda,2025-04-22T18:12:52.158135,0
+62878604,Ozzy Osbourne,Eat Me,2026-07-31T00:30:42.102527,0
+62878606,Ozzy Osbourne,Scary Little Green Men,2026-07-31T00:30:42.102527,0
 628797,Rage Against The Machine,Bombtrack,2025-07-04T10:02:03.497023,0
 628798,Rage Against The Machine,Killing In The Name,2025-04-22T18:12:52.158135,0
 628799,Rage Against The Machine,Take The Power Back,2025-07-04T10:02:03.497023,0
@@ -2896,6 +2958,7 @@ track_id,artist,title,added_at,is_deleted
 628970,Three Days Grace,I Hate Everything About You,2026-03-31T12:02:02.295310,0
 62909403,Дай Дарогу!,Прыгай в коляску,2025-10-17T13:02:02.507833,0
 62909427,Дай Дарогу!,Рок,2025-10-17T13:02:02.507833,0
+629424,System of A Down,Boom!,2026-07-31T00:30:42.102527,0
 62984956,Vader,Sanctification Denied,2025-04-22T18:12:52.158135,0
 62984960,Vader,And Satan Wept,2025-04-22T18:12:52.158135,0
 62984962,Vader,Emptiness,2025-04-22T18:12:52.158135,0
@@ -2905,13 +2968,15 @@ track_id,artist,title,added_at,is_deleted
 63008200,Дай Дарогу!,Самый уникальный,2025-11-03T15:02:03.007199,0
 63021879,Трибунал,Новый шанс,2025-04-22T18:12:52.158135,0
 6305990,Marion Crane,The Cycle,2026-01-17T19:02:02.828146,0
-630604,The Ting Tings,That's Not My Name,2025-04-22T18:12:52.158135,1
+630604,The Ting Tings,That's Not My Name,2025-04-22T18:12:52.158135,0
+630614,The Ting Tings,Shut Up and Let Me Go,2026-07-31T00:30:42.102527,0
 63084039,Receptor,Avocado,2025-04-22T18:12:52.158135,0
 63085968,НОМ,Антошка,2025-04-22T18:12:52.158135,0
 63103407,"Boikot, Rozalén, Pupil·les, Paulina, Maixa Lizarribar, Zuriñe Hidalgo","Alma Guerrera, Ni una Menos",2026-05-28T16:02:02.483328,0
 631483,Heart,Barracuda,2025-04-22T18:12:52.158135,0
 631620,C+C Music Factory,Gonna Make You Sweat (Everybody Dance Now),2025-04-22T18:12:52.158135,0
 631628,Wild Cherry,Play That Funky Music,2025-04-22T18:12:52.158135,0
+631653,Dead Or Alive,That's the Way (I Like It),2026-07-31T00:30:42.102527,0
 631680,Dancing Queens,You Spin Me 'Round,2025-04-22T18:12:52.158135,0
 631711,Heart,Barracuda,2025-04-22T18:12:52.158135,0
 632320,"Run DMC, Jason Nevins",It's like that,2025-04-22T18:12:52.158135,0
@@ -2964,6 +3029,7 @@ track_id,artist,title,added_at,is_deleted
 64057207,Christopher Tyng,Futurama Main Theme,2025-04-22T18:12:52.158135,0
 64131907,Дом Ветров,Сага о наёмниках,2025-04-22T18:12:52.158135,0
 64186264,7линия,Меняем,2025-04-22T18:12:52.158135,0
+64198125,"O.B.F., Charlie P",Sixteen Tons Of Dub,2026-07-31T00:30:42.102527,0
 64232828,"Feuerschwanz, Melissa Bonny",Ding,2025-04-22T18:12:52.158135,0
 64261469,The Crystal Method,Name of the Game,2025-04-22T18:12:52.158135,0
 64294050,Ленинград,Нет и ещё раз нет,2025-04-22T18:12:52.158135,0
@@ -2978,35 +3044,46 @@ track_id,artist,title,added_at,is_deleted
 64402593,Gancher & Ruin,Kickback,2026-01-15T17:02:03.161741,0
 64424886,Schandmaul,Der Teufel...,2025-04-22T18:12:52.158135,0
 64430002,"SOFT PLAY, Bob Vylan",One More Day Won’t Hurt,2025-04-22T18:12:52.158135,0
+644940,Cake,Comfort Eagle,2026-07-31T00:30:42.102527,0
 64499367,Несчастный Случай,Мир во время чумы,2025-04-22T18:12:52.158135,0
 645525,Crazy Town,Butterfly,2025-04-22T18:12:52.158135,0
 645561,Quiet Riot,Metal Health (Bang Your Head),2025-04-22T18:12:52.158135,0
+646133,Rage Against The Machine,Microphone Fiend,2026-07-31T00:30:42.102527,0
 646135,Rage Against The Machine,Kick Out the Jams,2026-02-09T12:02:02.724277,0
+646140,Rage Against The Machine,How I Could Just Kill a Man,2026-07-31T00:30:42.102527,0
 646516,System of A Down,Chop Suey!,2025-09-24T12:02:02.764716,0
+646771,Ram Jam,Black Betty,2026-07-31T00:30:42.102527,0
 64733427,Барто,90-ые,2025-04-22T18:12:52.158135,0
 64733428,"Барто, Naka",Скоро всё ёбнется,2025-04-22T18:12:52.158135,0
 64733430,Барто,Берлин,2025-04-22T18:12:52.158135,0
 64733433,Барто,Хочу,2025-04-22T18:12:52.158135,0
 64733437,Барто,Эпоха,2025-04-22T18:12:52.158135,0
+647599,"Stephanie D'Abruzzo, Rick Lyon, Avenue Q Ensemble",The Internet Is for Porn,2026-07-31T00:30:42.102527,0
 64779080,"Electer, Vêtu de Noir",Inferno,2025-04-22T18:12:52.158135,0
 64830381,Серебряная свадьба,Старая падла,2025-04-22T18:12:52.158135,0
 64830382,Серебряная свадьба,Я жизнь люблю...,2025-04-22T18:12:52.158135,0
 64830388,Серебряная свадьба,Чёрная речка,2025-04-22T18:12:52.158135,0
 64833659,Сплин,"Передайте это Гарри Поттеру, если вдруг его встретите",2025-04-22T18:12:52.158135,0
 64886022,,"Практик сексуальных взаимодействий – о суррогатном партнерстве, БДСМ и полиамории",2025-04-22T18:12:52.158135,1
+648931,System of A Down,Stealing Society,2026-07-31T00:30:42.102527,0
+648933,System of A Down,U-Fig,2026-07-31T00:30:42.102527,0
 648937,System of A Down,Lonely Day,2026-01-17T13:02:03.323532,0
 649033,Judas Priest,Painkiller,2025-04-22T18:12:52.158135,0
 649043,Judas Priest,The Sentinel,2025-05-14T16:02:02.126500,0
+649529,Ozzy Osbourne,I Don't Wanna Stop,2026-07-31T00:30:42.102527,0
 64957744,Sacrothorn,"Бойся, плачь, кричи, молись",2025-04-22T18:12:52.158135,0
 65000407,Потомучто,Психотерапевты,2025-04-22T18:12:52.158135,0
 65010175,Научно-технический рэп,Девелопер за 300,2025-04-22T18:12:52.158135,0
 65015273,Серебряная свадьба,"Adieu, La tête",2025-04-22T18:12:52.158135,0
 65029630,Babooshka,Вата,2025-04-22T18:12:52.158135,0
 65029640,Babooshka,Надувная церковь,2025-04-22T18:12:52.158135,0
+650650,Korn,Right Now,2026-07-31T00:30:42.102527,0
 65121686,Babooshka,Православный карантин,2025-04-22T18:12:52.158135,0
 65174178,"Pythius, Black Sun Empire",Kepler,2025-04-22T18:12:52.158135,0
 651863,Scissor Sisters,Any Which Way,2025-04-22T18:12:52.158135,0
 652425,crescentcadence,I Hate Myself,2025-11-28T11:02:02.748303,0
+652426,Joan Jett & the Blackhearts,I Wanna Be Your Dog,2026-07-31T00:30:42.102527,0
+65255335,Avatar,Colossus,2026-07-31T00:30:42.102527,0
 65276038,Tenebrax,Systema,2025-04-22T18:12:52.158135,0
 65322401,Like Nastya,Тебя поздравит Настя,2025-06-15T16:02:02.647806,1
 65389172,ЭЛЕКТРОСЛАБОСТЬ,Терентий,2025-04-22T18:12:52.158135,0
@@ -3017,12 +3094,22 @@ track_id,artist,title,added_at,is_deleted
 65487927,Sebastian Böhm,Sweet Dreams (Are Made of This),2025-04-22T18:12:52.158135,0
 65560030,"Razlom, Julia Marks",MoneyMoney,2025-04-22T18:12:52.158135,0
 65592100,"In Extremo, Russkaja",Gogiya,2025-04-22T18:12:52.158135,0
+656699,System of A Down,Innervision,2026-07-31T00:30:42.102527,0
+656700,System of A Down,Bubbles,2026-07-31T00:30:42.102527,0
 656703,System of A Down,I-E-A-I-A-I-O,2025-11-20T11:02:03.114206,0
+656705,System of A Down,Pictures,2026-07-31T00:30:42.102527,0
+656706,System of A Down,Highway Song,2026-07-31T00:30:42.102527,0
+656708,System of A Down,Ego Brain,2026-07-31T00:30:42.102527,0
+656711,System of A Down,Streamline,2026-07-31T00:30:42.102527,0
+656726,Korn,Y'all Want a Single,2026-07-31T00:30:42.102527,0
 6570906,The Prodigy,Their Law,2025-04-22T18:12:52.158135,0
 657265,Fatboy Slim,Wonderful Night,2025-04-22T18:12:52.158135,0
+658639,Judas Priest,Worth Fighting For,2026-07-31T00:30:42.102527,0
 6591882,"John Petrucci, Jordan Rudess, Tony Levin, Mike Portnoy, Liquid Tension Experiment",Acid Rain,2025-04-22T18:12:52.158135,1
 65933636,Metallica,Blackened 2020,2025-04-22T18:12:52.158135,0
+659962,Mudvayne,Scream With Me,2026-07-31T00:30:42.102527,0
 66023526,"DenDerty, Zardonic",Тотальное самоубийство,2025-04-22T18:12:52.158135,0
+660888,System of A Down,DDevil,2026-07-31T00:30:42.102527,0
 661210,System of A Down,Know,2026-04-17T16:02:02.685348,0
 6616204,Toxic Holocaust,In the Name of Science,2026-07-30T18:57:55.027287,0
 66165333,Арктида,Атака русских мертвецов,2025-04-22T18:12:52.158135,0
@@ -3030,7 +3117,9 @@ track_id,artist,title,added_at,is_deleted
 66165339,Арктида,Моя империя,2025-04-22T18:12:52.158135,0
 66193537,,Мужские оргазмы,2025-04-22T18:12:52.158135,0
 66193539,,Разговоры с партнёрами о сексе и во время секса,2025-04-22T18:12:52.158135,0
+662104,Judas Priest,Metal Meltdown,2026-07-31T00:30:42.102527,0
 66230299,Панк Жлоб Рок Банда СГ,Над озером,2025-04-22T18:12:52.158135,0
+662372,Tenacious D,Tribute,2026-07-31T00:30:42.102527,0
 66258699,Арктида,Позвизд,2025-04-22T18:12:52.158135,0
 66266231,Distemper,Где твой Punk Rock? Пиздабол!,2025-04-22T18:12:52.158135,0
 66271611,зелёный дядя u сёрферы чёрной дыры,Неофит,2026-03-18T22:02:03.201208,0
@@ -3039,7 +3128,9 @@ track_id,artist,title,added_at,is_deleted
 663391,Type O Negative,I Don't Wanna Be Me,2025-04-22T18:12:52.158135,0
 66345100,oneBYone,Kill At Will,2025-04-22T18:12:52.158135,0
 66394810,Static-X,Terminator Oscillator,2025-04-22T18:12:52.158135,0
+664866,Judas Priest,All Guns Blazing,2026-07-31T00:30:42.102527,0
 664867,Judas Priest,Leather Rebel,2025-05-14T16:02:02.126500,0
+664868,Judas Priest,Between the Hammer & the Anvil,2026-07-31T00:30:42.102527,0
 66496758,2rbina 2rista,Наташа + пиво в подарок,2025-04-22T18:12:52.158135,0
 66529556,Aeterna,Перекрёсток,2025-04-22T18:12:52.158135,0
 66565471,Powerman 5000,Black Lipstick,2025-04-22T18:12:52.158135,0
@@ -3048,6 +3139,9 @@ track_id,artist,title,added_at,is_deleted
 66781339,Рок-Опера Орфей,Шаг в темноту,2025-08-29T12:02:03.075113,1
 66781343,Рок-Опера Орфей,Герои,2025-08-29T12:02:03.075113,0
 66791848,Abstractonia,Arachnophobia,2025-05-14T17:02:02.722949,0
+668005,Dope,Die MF Die,2026-07-31T00:30:42.102527,0
+668010,Dope,Crazy,2026-07-31T00:30:42.102527,0
+668013,Dope,You're Full Of Shit,2026-07-31T00:30:42.102527,0
 6682813,The Prodigy,Out of Space,2025-04-22T18:12:52.158135,0
 6682826,The Prodigy,Poison,2025-04-22T18:12:52.158135,0
 66860014,Metal Weed,Молитва мёртвому Богу,2025-09-12T15:02:03.647462,0
@@ -3065,8 +3159,12 @@ track_id,artist,title,added_at,is_deleted
 66946809,"Shaka Ponk, Cypress Hill",Pure 90 (Rapping Queen),2025-04-22T18:12:52.158135,0
 66946818,Shaka Ponk,Black Listed,2025-04-22T18:12:52.158135,0
 66987712,,Оральный секс,2025-04-22T18:12:52.158135,0
+6699800,The Raconteurs,"Steady, As She Goes",2026-07-31T00:30:42.102527,0
 670475,Vaya Con Dios,Nah Neh Nah,2025-04-22T18:12:52.158135,0
+670501,Tenacious D,Master Exploder,2026-07-31T00:30:42.102527,0
+6705382,The White Stripes,The Hardest Button to Button,2026-07-31T00:30:42.102527,0
 6705392,The White Stripes,Seven Nation Army,2025-04-22T18:12:52.158135,0
+670583,Guano Apes,Dödel Up,2026-07-31T00:30:42.102527,0
 67118050,Гробовая Доска,Бык! Чё?,2025-04-22T18:12:52.158135,0
 67118053,Гробовая Доска,Передозировка,2025-04-22T18:12:52.158135,0
 67118054,Гробовая Доска,Да это ж мусора!,2025-04-22T18:12:52.158135,0
@@ -3081,10 +3179,13 @@ track_id,artist,title,added_at,is_deleted
 672264,Slayer,Psychopathy Red,2025-04-22T18:12:52.158135,0
 6723382,4 Arm,While I Lie Awake,2026-01-02T21:02:03.126882,0
 672683,System of A Down,Forest,2026-01-17T13:02:03.323532,0
+672684,System of A Down,ATWA,2026-07-31T00:30:42.102527,0
 672687,System of A Down,Toxicity,2025-09-24T12:02:02.764716,0
 672689,System of A Down,Aerials,2025-09-24T12:02:02.764716,0
 673605,System of A Down,Radio/Video,2026-04-17T16:02:02.685348,0
+673613,Korn,"Another Brick in the Wall, Pt. 1, 2, 3",2026-07-31T00:30:42.102527,0
 67381341,Найк Борзов,Лошадка,2025-04-22T18:12:52.158135,0
+674106,Tenacious D,The Metal,2026-07-31T00:30:42.102527,0
 67418495,Чугунный Скороход,Пидоры идут,2025-04-22T18:12:52.158135,1
 67424963,,Онанизм,2025-04-22T18:12:52.158135,0
 67431412,Ландыши,Крашеные хной,2025-04-22T18:12:52.158135,0
@@ -3096,7 +3197,9 @@ track_id,artist,title,added_at,is_deleted
 67694968,Потомучто,Душа,2025-04-22T18:12:52.158135,0
 67729682,,Динамщицы и динамщики,2025-04-22T18:12:52.158135,0
 67742957,Ландыши,Парикмахер,2025-04-22T18:12:52.158135,0
+678800,Judas Priest,Rock Forever,2026-07-31T00:30:42.102527,0
 67885284,Helloween,Forever And One (Neverland),2025-04-22T18:12:52.158135,0
+678865,Ozzy Osbourne,Facing Hell,2026-07-31T00:30:42.102527,0
 679169,AC/DC,Thunderstruck,2025-04-27T23:02:02.919409,0
 68029181,,One Night Stand,2025-04-22T18:12:52.158135,0
 680943,Fatboy Slim,Ya Mama,2025-04-22T18:12:52.158135,0
@@ -3113,6 +3216,7 @@ track_id,artist,title,added_at,is_deleted
 685747,Accept,Balls To The Wall,2025-04-22T18:12:52.158135,0
 68638715,,Женские оргазмы,2025-04-22T18:12:52.158135,0
 68872492,"Литл Бэйби Бам, Автобус Бастер",Бастер зомби,2025-04-22T18:12:52.158135,0
+688818,H-Blockx,The Power,2026-07-31T00:30:42.102527,0
 688819,Clawfinger,Out To Get Me,2025-04-22T18:12:52.158135,0
 68895114,L7,Fast and Frightening,2025-04-22T18:12:52.158135,0
 68983493,,Сексуальное равноправие feat. Misha Spektor,2025-04-22T18:12:52.158135,0
@@ -3132,6 +3236,7 @@ track_id,artist,title,added_at,is_deleted
 69355687,Б.А.У.,Сибирский федеральный округ,2025-04-22T18:12:52.158135,0
 69355690,Б.А.У.,Денчик ушёл в металл,2025-04-22T18:12:52.158135,0
 69418311,,Бодипозитив feat. Zap,2025-04-22T18:12:52.158135,0
+694686,AC/DC,Touch Too Much,2026-07-31T00:30:42.102527,0
 69536525,,Групповой секс,2025-04-22T18:12:52.158135,0
 69662837,,Вечеринки feat.Kinky Russia,2025-04-22T18:12:52.158135,0
 6972,Black Sabbath,Under The Sun,2025-09-05T16:02:02.137193,0
@@ -3149,12 +3254,14 @@ track_id,artist,title,added_at,is_deleted
 70225075,Bogdan Bobrov,Великий жнец,2025-06-11T17:02:02.134943,0
 70274580,Настя Полева,Голоса,2025-05-16T12:02:02.864908,1
 70282278,As Tequileiras do Funk,Bass da da da (Sentadão),2025-04-22T18:12:52.158135,0
+702966,Bomfunk MC's,Freestyler,2026-07-31T00:30:42.102527,0
 70342480,Голос Омерики,Как охуенно нигде не работать,2025-04-22T18:12:52.158135,0
 70342481,Голос Омерики,Министр культуры,2025-04-22T18:12:52.158135,0
 70342486,Голос Омерики,Тёплая китайская куртка,2025-04-22T18:12:52.158135,0
 70342490,Голос Омерики,ВММХЗК,2025-04-22T18:12:52.158135,0
 70342491,Голос Омерики,Поле чудес,2025-04-22T18:12:52.158135,0
 70342492,Голос Омерики,Чехословакия,2025-04-22T18:12:52.158135,0
+703507,Krokus,"Bad Boys, Rag Dolls",2026-07-31T00:30:42.102527,0
 70388381,,Фетиши,2025-04-22T18:12:52.158135,0
 70404597,The road to hogwarts,Гангстеры старой школы,2025-04-22T18:12:52.158135,1
 70443564,Millie B,M to the B,2025-04-22T18:12:52.158135,0
@@ -3171,6 +3278,8 @@ track_id,artist,title,added_at,is_deleted
 70653,Nightwish,Moondance,2025-04-22T18:12:52.158135,0
 70688446,Rockerjoker,Растафарай,2025-04-22T18:12:52.158135,0
 70689262,"Йорш, Смех",Тёлка за 30,2025-04-22T18:12:52.158135,0
+707339,New Politics,Dignity,2026-07-31T00:30:42.102527,0
+707344,New Politics,My Love,2026-07-31T00:30:42.102527,0
 707386,The Prodigy,Breathe,2025-04-22T18:12:52.158135,0
 70819282,Anthony Gomes,Tell Somebody,2025-04-22T18:12:52.158135,0
 70868684,Los Chotatamos,Ночной ларёк,2025-04-22T18:12:52.158135,0
@@ -3228,6 +3337,7 @@ track_id,artist,title,added_at,is_deleted
 72242616,KillaGram,А пока,2025-04-22T18:12:52.158135,0
 72250,Godsmack,The Enemy,2025-04-22T18:12:52.158135,0
 72254,Godsmack,Voodoo,2025-04-22T18:12:52.158135,0
+723205,Lordi,This Is Heavy Metal,2026-07-31T00:30:42.102527,0
 72346856,Caravan Palace,Supersonics,2025-04-22T18:12:52.158135,0
 72371576,БУМ,Новенький,2026-04-19T11:02:02.779772,0
 724147,Limp Bizkit,It'll Be OK,2025-04-22T18:12:52.158135,0
@@ -3247,8 +3357,11 @@ track_id,artist,title,added_at,is_deleted
 73087561,Leibonik,Бэтэ,2025-04-22T18:12:52.158135,0
 73138024,Gydra,Stoning,2025-04-22T18:12:52.158135,0
 73138026,Gydra,Poison Trap,2025-04-22T18:12:52.158135,0
+73275073,System of A Down,Protect The Land,2026-07-31T00:30:42.102527,0
 73275863,Jäde,TV Says (VIP),2025-04-22T18:12:52.158135,0
 73300463,"CHESS, Receptor",Catch Me,2025-04-22T18:12:52.158135,0
+73351,Velvet Revolver,Slither,2026-07-31T00:30:42.102527,0
+73479738,AC/DC,Demon Fire,2026-07-31T00:30:42.102527,0
 73502774,Levela,Overdrive,2025-04-22T18:12:52.158135,0
 735230,Motörhead,Rock 'N' Roll,2025-04-22T18:12:52.158135,0
 735891,Bruce Dickinson,Tears Of The Dragon,2025-04-22T18:12:52.158135,0
@@ -3278,11 +3391,15 @@ track_id,artist,title,added_at,is_deleted
 74281122,HMR,Бездна,2025-04-22T18:12:52.158135,0
 7435,DMX,Party Up,2025-04-22T18:12:52.158135,0
 744617,ZZ Top,She's Just Killing Me,2025-04-22T18:12:52.158135,0
+745237,"H-Blockx, Dr. Ring Ding",Get in The Ring,2026-07-31T00:30:42.102527,0
+745622,Guano Apes,Dick,2026-07-31T00:30:42.102527,0
 7462992,Ed Rush,Chubrub,2025-04-22T18:12:52.158135,0
 74725542,United Idol,Hai Phút Hơn,2025-04-22T18:12:52.158135,0
+74854294,"WISEKIDS, Ida Corr",Whats The Prob Dog? (Let me Think About It),2026-07-31T00:30:42.102527,1
 74971317,"Warp Brothers, D.O.N.S.",Smells Like Teen Spirit,2025-04-22T18:12:52.158135,0
 74979574,Синий трактор,Микробы,2025-06-13T13:02:02.267985,0
 74981,Ohio Players,Love Rollercoaster,2025-04-22T18:12:52.158135,0
+74994828,"The Pretty Reckless, Tom Morello",And So It Went,2026-07-31T00:30:42.102527,0
 75210156,Skraeckoedlan,Universum,2026-04-08T15:02:02.215090,0
 75367626,Infornal FuckЪ,Песнь о загубленной кукушке,2025-04-22T18:12:52.158135,0
 75367629,Infornal FuckЪ,О любви к рептилиям,2025-04-22T18:12:52.158135,0
@@ -3312,12 +3429,14 @@ track_id,artist,title,added_at,is_deleted
 76931397,Phibes,Trigger,2025-04-22T18:12:52.158135,0
 76954486,Annihilator,King of the Kill,2025-04-22T18:12:52.158135,0
 769758,"Lil Jon & The East Side Boyz, Ying Yang Twins",Get Low,2025-04-22T18:12:52.158135,0
+77021400,The Pretty Reckless,Witches Burn,2026-07-31T00:30:42.102527,0
 770607,Sir Mix-A-Lot,Monsta Mack,2025-04-22T18:12:52.158135,0
 77077630,"Future Funk Squad, Stu Brootal",Belly of the Beast,2025-04-22T18:12:52.158135,0
 770837,Mötley Crüe,"Knock 'Em Dead, Kid",2025-04-22T18:12:52.158135,0
 771032,PAIN,Bye/Die,2025-04-22T18:12:52.158135,0
 77134988,Skold,Unspoken,2025-04-22T18:12:52.158135,0
 77134998,Skold,Goodbye,2025-04-22T18:12:52.158135,0
+77334114,"Hyper, WARGASM (UK), WARGASM UK, Eshericks",Spoiler (Recoil) feat. WARGASM (UK),2026-07-31T00:30:42.102527,0
 77656345,Капитан Краб,Разминка,2025-06-13T13:02:02.267985,0
 77657553,Repus Tuto Matos,Стадо,2025-04-22T18:12:52.158135,0
 77659494,Хитобои,Хуй на руль,2025-04-22T18:12:52.158135,0
@@ -3345,6 +3464,7 @@ track_id,artist,title,added_at,is_deleted
 782315,Rob Zombie,Pussy Liquor,2025-04-22T18:12:52.158135,0
 782326,White Zombie,Thunder Kiss '65,2025-04-22T18:12:52.158135,0
 78246208,The Blockchain,Autogenic Training,2025-04-29T19:02:03.272378,0
+78335267,Eisbrecher,Leiserdrehen,2026-07-31T00:30:42.102527,0
 78344044,Гробовая Доска,Человек не предназначен для войны,2025-04-22T18:12:52.158135,0
 78344045,Гробовая Доска,К чёрту в гости,2025-04-22T18:12:52.158135,0
 783710,Scars On Broadway,Serious,2025-04-22T18:12:52.158135,0
@@ -3376,7 +3496,7 @@ track_id,artist,title,added_at,is_deleted
 79054624,Vulture,The Court of Caligula,2025-04-22T18:12:52.158135,0
 792032,Stereoliza,X.Y.Z.,2025-04-22T18:12:52.158135,0
 79219323,Helloween,Best Time,2025-04-25T18:02:02.229657,0
-792485,Urge Overkill,"Girl, You'll Be A Woman Soon",2025-04-22T18:12:52.158135,1
+792485,Urge Overkill,"Girl, You'll Be A Woman Soon",2025-04-22T18:12:52.158135,0
 7927474,Robots In Disguise,Turn It Up,2025-04-22T18:12:52.158135,0
 79292629,Радиопомехи,Шоу маст гоу он,2025-04-22T18:12:52.158135,0
 79295629,King Buffalo,Grifter,2025-04-22T18:12:52.158135,0
@@ -3434,15 +3554,19 @@ track_id,artist,title,added_at,is_deleted
 82106514,Бахыт Компот,Бухгалтер Иванов,2025-04-22T18:12:52.158135,0
 82199546,Б.А.У.,Я ненавижу Питер,2025-04-22T18:12:52.158135,0
 82199549,Б.А.У.,Кожаная пуля,2025-04-22T18:12:52.158135,0
+822273,H-Blockx,Risin' High,2026-07-31T00:30:42.102527,0
 822550,Ska-P,Intifada,2025-04-22T18:12:52.158135,0
 822610,Ska-P,Estampida,2025-04-22T18:12:52.158135,0
+823301,Rage,Straight To Hell,2026-07-31T00:30:42.102527,0
 82449623,Б.А.У.,Рыба-дрель,2025-04-22T18:12:52.158135,0
 82449628,Б.А.У.,Спортивный металл,2025-04-22T18:12:52.158135,0
 82449630,Б.А.У.,Девять кругов ЖКХ,2025-04-22T18:12:52.158135,0
 82540521,Потомучто,Хранитель,2025-04-22T18:12:52.158135,0
 82544324,U.D.O.,Holy Invaders,2025-04-22T18:12:52.158135,0
+825772,Empyr,New Day,2026-07-31T00:30:42.102527,0
 82678953,Under Delusion,Fairy,2025-04-22T18:12:52.158135,0
 827472,Volbeat,I Only Wanna Be With You,2025-04-22T18:12:52.158135,0
+827779,Sanctuary,Battle Angels,2026-07-31T00:30:42.102527,0
 82798697,PALC,С каждым,2025-04-22T18:12:52.158135,0
 82840741,​Роковой Год,Пандемия,2025-04-22T18:12:52.158135,0
 82955636,GRIN,Ешь пей веселись,2025-06-09T18:02:02.771492,0
@@ -3502,6 +3626,7 @@ track_id,artist,title,added_at,is_deleted
 86444979,Amyl and The Sniffers,Hertz,2025-04-22T18:12:52.158135,0
 86801457,I Drink My Coffee Alone,Cheri Cheri Lady,2025-04-22T18:12:52.158135,0
 8681344,Animal Alpha,Bundy,2025-04-22T18:12:52.158135,0
+869884,H-Blockx,The Power,2026-07-31T00:30:42.102527,0
 87259488,Петрович Бенд,Не горюй,2025-04-22T18:12:52.158135,0
 87269933,Холст,Ветер,2025-05-19T19:02:03.177074,0
 87269943,Холст,Люди,2025-06-03T21:02:03.723894,0
@@ -3514,6 +3639,7 @@ track_id,artist,title,added_at,is_deleted
 87904562,Luca Stricagnoli,Everybody,2025-04-22T18:12:52.158135,0
 87905167,Tenebrax,Skrepa,2025-04-22T18:12:52.158135,0
 88042815,"SebastiAn, Metallica",Don’t Tread On Else Matters,2025-05-05T18:02:02.958366,0
+881057,H-Blockx,Step Back,2026-07-31T00:30:42.102527,0
 88291816,"Papa Roach, FEVER 333, Sueco",Swerve,2025-04-22T18:12:52.158135,1
 8841543,"faun, Santiano",Tanz mit mir,2025-04-22T18:12:52.158135,0
 88492711,Locked Club,Edu V Egipet,2025-04-22T18:12:52.158135,0
@@ -3522,6 +3648,7 @@ track_id,artist,title,added_at,is_deleted
 89047738,Alpine Universe,Battles,2025-04-22T18:12:52.158135,0
 890770,Volbeat,Who They Are,2025-09-18T22:02:03.184915,0
 890833,Linkin Park,Wretches and Kings,2025-04-22T18:12:52.158135,0
+89280965,Electric Callboy,We Got the Moves,2026-07-31T00:30:42.102527,0
 89518102,Zakk Sabbath,Under the Sun - Every Day Comes and Goes,2025-04-22T18:12:52.158135,0
 89539329,Kinderstar,Пижама-пати,2026-04-19T11:02:02.779772,0
 89613416,Канцлер Ги,Единственный враг,2025-04-22T18:12:52.158135,0
@@ -3590,10 +3717,11 @@ track_id,artist,title,added_at,is_deleted
 95561698,ЭЛЕКТРОСЛАБОСТЬ,Новогодний Вадим,2025-04-22T18:12:52.158135,0
 95822893,Hanislip,Yanomami,2026-01-06T16:02:03.001517,0
 95884,House Of Pain,Jump Around,2025-04-22T18:12:52.158135,0
-95895,Run DMC,It's Tricky,2025-04-22T18:12:52.158135,1
+95895,Run DMC,It's Tricky,2025-04-22T18:12:52.158135,0
 96064,Linkin Park,Faint,2025-04-22T18:12:52.158135,0
 96079,"Gorillaz, De La Soul, Jamie Hewlett",Feel Good Inc.,2025-04-22T18:12:52.158135,0
 96117191,Volbeat,The Devil Rages On,2025-04-22T18:12:52.158135,0
+96212,Foo Fighters,The Pretender,2026-07-31T00:30:42.102527,0
 96216718,сила удара,Я люблю людей,2025-04-22T18:12:52.158135,0
 96234620,ЕстьЧО,"Где бабки, Джонни",2025-04-22T18:12:52.158135,0
 96705769,"Ленинград, Зоя",Сюрприз,2025-04-22T18:12:52.158135,0
@@ -3604,10 +3732,13 @@ track_id,artist,title,added_at,is_deleted
 97758492,Gummibär,The Gummy Bear Song Russian (Я Мишка Гумми Бер),2025-06-15T16:02:02.647806,1
 97835451,Хитобои,Мизинчик,2025-04-22T18:12:52.158135,0
 98085677,"Йорш, Голос Омерики",За 50,2025-11-26T17:02:02.796764,0
+982575,Krokus,Rock'n Roll Handshake,2026-07-31T00:30:42.102527,0
+982579,Krokus,Dirty Street,2026-07-31T00:30:42.102527,0
 98328915,Проха,Борщ,2025-04-22T18:12:52.158135,0
 9836933,Judas Priest,Rocka Rolla,2025-04-22T18:12:52.158135,0
 9836938,Judas Priest,Run Of The Mill,2025-04-22T18:12:52.158135,0
 98480059,Kreator,Hate Über Alles,2025-04-22T18:12:52.158135,0
+985578,Judas Priest,Nostradamus,2026-07-31T00:30:42.102527,0
 9860311,Hanzel Und Gretyl,Unterstutzung 87,2025-04-22T18:12:52.158135,0
 99113842,Ghost,Call Me Little Sunshine,2025-04-22T18:12:52.158135,0
 99219414,Kreator,Strongest Of The Strong,2025-04-22T18:12:52.158135,0
