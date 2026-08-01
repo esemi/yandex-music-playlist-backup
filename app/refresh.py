@@ -19,30 +19,9 @@ from app.settings import app_settings
 logger = logging.getLogger(__name__)
 
 _FILENAME_UNSAFE = re.compile(r'[\\/:*?"<>|]+')
-
+# Most filesystems (ext4, apfs) cap a single filename at 255 bytes.
+_FILENAME_MAX_BYTES = 255
 _shutdown = asyncio.Event()
-
-
-def _install_signal_handlers() -> None:
-    """Ask the running loop to flip the shutdown flag on SIGINT/SIGTERM."""
-    loop = asyncio.get_running_loop()
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        try:
-            loop.add_signal_handler(sig, _request_shutdown, sig)
-        except NotImplementedError:  # pragma: no cover - windows / no-loop-signal support
-            signal.signal(sig, lambda *_, s=sig: _request_shutdown(s))
-
-
-def _request_shutdown(sig: signal.Signals) -> None:
-    logger.warning(f'received {signal.Signals(sig).name}, finishing gracefully')
-    _shutdown.set()
-
-
-def _track_filename(artist: str, title: str) -> str:
-    """Build a filesystem-safe `<artist> - <title>.mp3` name."""
-    raw = f'{artist} - {title}'
-    safe = _FILENAME_UNSAFE.sub('_', raw).strip()
-    return f'{safe}.mp3'
 
 
 @dataclass
@@ -90,7 +69,7 @@ async def main(
 
     logger.info('Sync completed')
 
-    if download and not _shutdown.is_set():
+    if download:
         logger.info('Downloading started')
         downloaded = await _download_tracks(client, owner_id=playlist_owner, csv_path=csv_path)
         logger.info(f'Downloaded {downloaded} new track(s)')
@@ -198,7 +177,7 @@ async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -
             continue
 
         artist = ', '.join(artist.name for artist in track.artists)
-        target = dest_dir / _track_filename(artist, track.title)
+        target = dest_dir / _track_filename(artist, track.title, str(track.id))
         if target.exists():
             logger.debug(f'skip existing {target.name}')
             continue
@@ -260,3 +239,38 @@ def _save_tracks_to_csv(tracks: list[Track], csv_path: Path) -> None:
                 'is_deleted': int(track.is_deleted),
             }
             writer.writerow(row)
+
+
+def _install_signal_handlers() -> None:
+    """Ask the running loop to flip the shutdown flag on SIGINT/SIGTERM."""
+    loop = asyncio.get_running_loop()
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        try:
+            loop.add_signal_handler(sig, _request_shutdown, sig)
+        except NotImplementedError:  # pragma: no cover - windows / no-loop-signal support
+            signal.signal(sig, lambda *_, s=sig: _request_shutdown(s))
+
+
+def _request_shutdown(sig: signal.Signals) -> None:
+    logger.warning(f'received {signal.Signals(sig).name}, finishing gracefully')
+    _shutdown.set()
+
+
+def _track_filename(artist: str, title: str, track_id: str, suffix: str = '.mp3') -> str:
+    """Build a filesystem-safe `<artist> - <title> [<track_id>].mp3` name.
+
+    The stem is truncated so the whole name fits into the filesystem byte limit
+    (compilations with dozens of artists easily blow past 255 bytes otherwise).
+    The `track_id` tail is always kept intact, so truncated names stay unique.
+    """
+    raw = f'{artist} - {title}'
+    safe = _FILENAME_UNSAFE.sub('_', raw).strip()
+
+    tail = f' [{track_id}]{suffix}'
+    budget = _FILENAME_MAX_BYTES - len(tail.encode('utf-8'))
+    encoded = safe.encode('utf-8')
+    if len(encoded) > budget:
+        # cut on a byte boundary, then drop a possibly broken trailing char
+        safe = encoded[:budget].decode('utf-8', errors='ignore').rstrip()
+
+    return f'{safe}{tail}'

@@ -69,8 +69,8 @@ python -m app --username esemyon --proxy 127.0.0.1:1080
 [x] качать только то чего нет на диске
 [x] flock to docs
 [x] signal catch
-[ ] [качать флаки](https://github.com/llistochek/yandex-music-downloader)
 [ ] ускорить скачивание
+[ ] [качать флаки](https://github.com/llistochek/yandex-music-downloader)
 [ ] добавить доки по рсинку на плеер
 [ ] добавить выкачивание треков с ютюба
 [ ] переделываем в десктоп апку?

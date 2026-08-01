@@ -9,14 +9,37 @@ from pytest_mock import MockerFixture
 
 
 @pytest.mark.parametrize(('artist', 'title', 'expected'), [
-    ('Nirvana', 'Come as You Are', 'Nirvana - Come as You Are.mp3'),
-    ('AC/DC', 'T.N.T', 'AC_DC - T.N.T.mp3'),
-    ('a?b', 'c:d*e', 'a_b - c_d_e.mp3'),
+    ('Nirvana', 'Come as You Are', 'Nirvana - Come as You Are [42].mp3'),
+    ('AC/DC', 'T.N.T', 'AC_DC - T.N.T [42].mp3'),
+    ('a?b', 'c:d*e', 'a_b - c_d_e [42].mp3'),
 ])
 def test_track_filename(artist: str, title: str, expected: str) -> None:
-    result = _track_filename(artist, title)
+    result = _track_filename(artist, title, '42')
 
     assert result == expected
+
+
+def test_track_filename_truncates_long_name() -> None:
+    result = _track_filename('Artist', 'x' * 500, '42')
+
+    assert len(result.encode('utf-8')) <= 255
+    assert result.endswith(' [42].mp3')
+
+
+def test_track_filename_truncation_keeps_valid_utf8() -> None:
+    result = _track_filename('Кино', 'Группа крови ' * 40, '42')
+
+    assert len(result.encode('utf-8')) <= 255
+    assert result.encode('utf-8').decode('utf-8') == result
+
+
+def test_track_filename_unique_after_truncation() -> None:
+    title = 'x' * 500
+
+    name1 = _track_filename('Artist', title, '111')
+    name2 = _track_filename('Artist', title, '222')
+
+    assert name1 != name2
 
 
 def _seed_csv(csv_path: Path, make_track: Callable[..., Track], track_ids: list[str]) -> None:
@@ -81,7 +104,7 @@ async def test_download_tracks_skips_existing(
     _seed_csv(csv_path, make_track, ['1'])
     raw = make_yandex_track(artist='Artist', title='Title')
     (tracks_dir / 'user').mkdir()
-    (tracks_dir / 'user' / 'Artist - Title.mp3').write_bytes(b'')
+    (tracks_dir / 'user' / 'Artist - Title [1].mp3').write_bytes(b'')
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
     mocker.patch('app.refresh._interruptible_sleep')
