@@ -31,7 +31,7 @@ poetry install
 ### Usage
 
 ```text
-python -m app -u <username> [-x <proxy>] [-d]
+python -m app -u <username> [-x <proxy>] [-d] [-t <token>]
 ```
 
 | Flag | Long | Required | Description |
@@ -39,6 +39,7 @@ python -m app -u <username> [-x <proxy>] [-d]
 | `-u` | `--username` | yes | Username of the playlist owner whose likes are backed up |
 | `-x` | `--proxy` | no | Proxy `host:port`, e.g. `127.0.0.1:1080` — use it when running outside Russia |
 | `-d` | `--download` | no | Download liked tracks as mp3 into `<tracks_dir>/<username>/`, skipping files already on disk |
+| `-t` | `--token` | no | Yandex Music OAuth token. Overrides `YANDEX_TOKEN` from settings/`.env` (needed to read private likes) |
 
 ### Examples
 
@@ -51,6 +52,9 @@ python -m app -u esemyon -x 127.0.0.1:1080
 
 # back up AND download new tracks as mp3
 python -m app -u esemyon -x 127.0.0.1:1080 --download
+
+# pass the OAuth token explicitly instead of putting it in .env
+python -m app -u esemyon --token y0__xxxxxxxx --download
 
 # long-form flags
 python -m app --username esemyon --proxy 127.0.0.1:1080

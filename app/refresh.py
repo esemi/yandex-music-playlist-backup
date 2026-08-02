@@ -42,12 +42,13 @@ async def main(
     playlist_owner: str,
     proxy_server: str | None = None,  # if you are running outside from Russian-related countries
     download: bool = False,
+    token: str | None = None,  # CLI token takes priority over the one from settings
 ) -> None:
     """Main function."""
     _install_signal_handlers()
 
     request = Request(proxy_url=f'http://{proxy_server}') if proxy_server else None
-    client = await ClientAsync(request=request, token=app_settings.yandex_token).init()
+    client = await ClientAsync(request=request, token=token or app_settings.yandex_token).init()
 
     csv_path = app_settings.playlists_dir / f'{playlist_owner}.csv'
 
@@ -166,7 +167,6 @@ async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -
         track.track_id
         for track in existing_tracks
     ])
-    client._request.proxy_url = None
 
     semaphore = asyncio.Semaphore(app_settings.download_concurrency)
     results = await asyncio.gather(*[

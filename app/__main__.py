@@ -26,6 +26,13 @@ def _parse_args() -> argparse.Namespace:
         action='store_true',
         help='Download liked tracks as mp3 into the tracks dir (skips ones already on disk)',
     )
+    parser.add_argument(
+        '-t', '--token',
+        required=False,
+        type=str,
+        default=None,
+        help='Yandex Music OAuth token (overrides the one from settings/.env)',
+    )
     return parser.parse_args()
 
 
@@ -40,4 +47,5 @@ if __name__ == '__main__':
         playlist_owner=args.username,
         proxy_server=args.proxy,
         download=args.download,
+        token=args.token,
     ))
