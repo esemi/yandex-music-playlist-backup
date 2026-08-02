@@ -59,6 +59,7 @@ def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
         artist: str = 'Artist',
         title: str = 'Title',
         available: bool = True,
+        track_type: str = 'track',
     ) -> object:
         codec_info = mocker.MagicMock()
         codec_info.codec = 'mp3'
@@ -69,6 +70,7 @@ def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
         track.id = track_id
         track.title = title
         track.available = available
+        track.type = track_type
         track.artists = [mocker.MagicMock()]
         track.artists[0].name = artist
         track.get_download_info_async = mocker.AsyncMock(return_value=[codec_info])

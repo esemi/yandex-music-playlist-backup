@@ -63,13 +63,47 @@ async def test_download_tracks_downloads_new(
     raw = [make_yandex_track(track_id='1'), make_yandex_track(track_id='2', title='Other')]
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=raw)
-    mocker.patch('app.refresh._interruptible_sleep')
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
     assert downloaded == 2
     assert _codec_info(raw[0]).download_async.call_count == 1
     assert _codec_info(raw[1]).download_async.call_count == 1
+
+
+async def test_download_tracks_respects_concurrency_limit(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    import asyncio
+
+    mocker.patch('app.refresh.app_settings.download_concurrency', 2)
+    csv_path = tmp_path / 'user.csv'
+    ids = ['1', '2', '3', '4']
+    _seed_csv(csv_path, make_track, ids)
+    raw = [make_yandex_track(track_id=tid, title=f'T{tid}') for tid in ids]
+    in_flight = 0
+    peak = 0
+
+    async def _slow_download(*_args: object, **_kwargs: object) -> None:
+        nonlocal in_flight, peak
+        in_flight += 1
+        peak = max(peak, in_flight)
+        await asyncio.sleep(0)
+        in_flight -= 1
+
+    for track in raw:
+        _codec_info(track).download_async = mocker.AsyncMock(side_effect=_slow_download)
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=raw)
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 4
+    assert peak <= 2
 
 
 async def test_download_tracks_stops_on_shutdown(
@@ -84,7 +118,6 @@ async def test_download_tracks_stops_on_shutdown(
     raw = [make_yandex_track(track_id='1'), make_yandex_track(track_id='2', title='Other')]
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=raw)
-    mocker.patch('app.refresh._interruptible_sleep')
     refresh._shutdown.set()
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
@@ -107,7 +140,6 @@ async def test_download_tracks_skips_existing(
     (tracks_dir / 'user' / 'Artist - Title [1].mp3').write_bytes(b'')
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
-    mocker.patch('app.refresh._interruptible_sleep')
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
@@ -127,7 +159,25 @@ async def test_download_tracks_skips_unavailable(
     raw = make_yandex_track(available=False)
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
-    mocker.patch('app.refresh._interruptible_sleep')
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 0
+    assert _codec_info(raw).download_async.call_count == 0
+
+
+async def test_download_tracks_skips_podcast(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(track_type='podcast-episode')
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
@@ -146,7 +196,6 @@ async def test_download_tracks_creates_dest_dir(
     _seed_csv(csv_path, make_track, ['1'])
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[make_yandex_track()])
-    mocker.patch('app.refresh._interruptible_sleep')
 
     await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
@@ -168,7 +217,6 @@ async def test_download_tracks_timeout_not_counted(
     _codec_info(raw).download_async = mocker.AsyncMock(side_effect=TimedOutError())
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
-    mocker.patch('app.refresh._interruptible_sleep')
 
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 

@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     tracks_dir: Path = _ROOT_DIR / 'tracks'
     playlists_dir: Path = _ROOT_DIR / 'playlists'
     yandex_token: str | None = None
+    download_concurrency: int = 8
 
 
 app_settings = Settings()

@@ -10,6 +10,20 @@ def test_settings_default_dirs() -> None:
     assert settings.playlists_dir.name == 'playlists'
 
 
+def test_settings_default_download_concurrency() -> None:
+    settings = Settings()
+
+    assert settings.download_concurrency == 8
+
+
+def test_settings_download_concurrency_env_override(monkeypatch) -> None:
+    monkeypatch.setenv('download_concurrency', '8')
+
+    settings = Settings()
+
+    assert settings.download_concurrency == 8
+
+
 def test_settings_env_override(monkeypatch) -> None:
     monkeypatch.setenv('logs_dir', '/custom/logs')
 

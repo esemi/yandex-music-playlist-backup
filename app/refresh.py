@@ -1,6 +1,5 @@
 """Module for backing up Yandex Music playlist tracks."""
 import asyncio
-import contextlib
 import csv
 import logging
 import os
@@ -11,7 +10,8 @@ from datetime import datetime
 from pathlib import Path
 
 from yandex_music import ClientAsync, TracksList
-from yandex_music.exceptions import TimedOutError
+from yandex_music import Track as YandexTrack
+from yandex_music.exceptions import NetworkError, TimedOutError
 from yandex_music.utils.request_async import Request
 
 from app.settings import app_settings
@@ -152,6 +152,7 @@ async def _get_liked_tracks(client: ClientAsync, owner_id: str) -> list[Track]:
 async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -> int:
     """Download liked tracks as mp3 into `dest_dir`, skipping ones already on disk.
 
+    Downloads run concurrently, bounded by `download_concurrency`.
     Returns the number of freshly downloaded files.
     """
     dest_dir = app_settings.tracks_dir / owner_id
@@ -165,44 +166,48 @@ async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -
         track.track_id
         for track in existing_tracks
     ])
+    client._request.proxy_url = None
 
-    downloaded = 0
-    for track in raw_tracks:
+    semaphore = asyncio.Semaphore(app_settings.download_concurrency)
+    results = await asyncio.gather(*[
+        _download_one(track, dest_dir, semaphore)
+        for track in raw_tracks
+    ])
+    return sum(results)
+
+
+async def _download_one(track: YandexTrack, dest_dir: Path, semaphore: asyncio.Semaphore) -> bool:
+    """Download a single track; return True if a new file was written."""
+    if _shutdown.is_set():
+        return False
+
+    if not track.available:
+        logger.info(f'skip unavailable {track.title}')
+        return False
+
+    if track.type == 'podcast-episode':
+        logger.info(f'skip podcasts {track.title}')
+        return False
+
+    artist = ', '.join(artist.name for artist in track.artists)
+    target = dest_dir / _track_filename(artist, track.title, str(track.id))
+    if target.exists():
+        logger.debug(f'skip existing {target.name}')
+        return False
+
+    async with semaphore:
         if _shutdown.is_set():
-            logger.warning(f'shutdown requested, stopping after {downloaded} track(s)')
-            break
-
-        if not track.available:
-            logger.info(f'skip unavailable {track.title}')
-            continue
-
-        artist = ', '.join(artist.name for artist in track.artists)
-        target = dest_dir / _track_filename(artist, track.title, str(track.id))
-        if target.exists():
-            logger.debug(f'skip existing {target.name}')
-            continue
-
+            return False
         try:
             codec_info = (await track.get_download_info_async(timeout=10))[-1]
             logger.info(f'downloading {target} {codec_info.codec} {codec_info.bitrate_in_kbps}')
             await codec_info.download_async(str(target), timeout=25)
             logger.info('downloading success')
-
-        except TimedOutError as exc:
+        except (TimedOutError, NetworkError) as exc:
             logger.warning(f'downloading failed {exc}')
+            return False
 
-        else:
-            downloaded += 1
-
-        await _interruptible_sleep(2)
-
-    return downloaded
-
-
-async def _interruptible_sleep(seconds: float) -> None:
-    """Sleep, but wake up immediately if shutdown is requested."""
-    with contextlib.suppress(TimeoutError):
-        await asyncio.wait_for(_shutdown.wait(), timeout=seconds)
+    return True
 
 
 def _get_tracks_from_csv(csv_path: Path) -> list[Track]:
