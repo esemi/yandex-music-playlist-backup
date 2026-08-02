@@ -76,8 +76,19 @@ python -m app --username esemyon --proxy 127.0.0.1:1080
 */30 * * * * cd ~/development/yandex-music-playlist-backup && flock -n logs/refresh.lock venv/bin/python -m app -u esemyon -x 127.0.0.1:1080 -d >> logs/refresh.log 2>&1
 ```
 
-### TODO
-[x] добавить выкачивание не найденных треков с ютуба
-[ ] добавить доки по рсинку на плеер
-[ ] [качать флаки](https://github.com/llistochek/yandex-music-downloader)
-[ ] переделываем в десктоп апку?
+### Sync downloaded tracks to a player
+
+Downloaded mp3 live in `tracks/<username>/`. Mirror that folder to a player
+(phone, SD card, DAP) with `rsync`.
+
+```shell
+rsync -av --partial tracks/esemyon/ /media/esemi/PLAYER/Music/esemyon/
+```
+
+`--delete` makes it a true mirror — tracks removed locally get removed on the
+player too. Handy, but destructive, so double-check the target path first:
+
+```shell
+rsync -av --delete --partial tracks/esemyon/ /media/esemi/PLAYER/Music/esemyon/
+```
+
