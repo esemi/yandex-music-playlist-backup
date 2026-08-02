@@ -15,6 +15,7 @@ from yandex_music.exceptions import NetworkError, TimedOutError
 from yandex_music.utils.request_async import Request
 
 from app.settings import app_settings
+from app.youtube import download_from_youtube
 
 logger = logging.getLogger(__name__)
 
@@ -177,16 +178,16 @@ async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -
 
 
 async def _download_one(track: YandexTrack, dest_dir: Path, semaphore: asyncio.Semaphore) -> bool:
-    """Download a single track; return True if a new file was written."""
+    """Download a single track; return True if a new file was written.
+
+    Tracks that are unavailable on Yandex fall back to YouTube Music (opt-in via
+    `youtube_fallback`); everything else is downloaded straight from Yandex.
+    """
     if _shutdown.is_set():
         return False
 
-    if not track.available:
-        logger.info(f'skip unavailable {track.title}')
-        return False
-
-    if track.type == 'podcast-episode':
-        logger.info(f'skip podcasts {track.title}')
+    if track.type != 'music':
+        logger.info(f'skip not music {track.title} {track.type}')
         return False
 
     artist = ', '.join(artist.name for artist in track.artists)
@@ -198,6 +199,10 @@ async def _download_one(track: YandexTrack, dest_dir: Path, semaphore: asyncio.S
     async with semaphore:
         if _shutdown.is_set():
             return False
+
+        if not track.available:
+            return await _download_unavailable(artist, track.title, target)
+
         try:
             codec_info = (await track.get_download_info_async(timeout=10))[-1]
             logger.info(f'downloading {target} {codec_info.codec} {codec_info.bitrate_in_kbps}')
@@ -208,6 +213,20 @@ async def _download_one(track: YandexTrack, dest_dir: Path, semaphore: asyncio.S
             return False
 
     return True
+
+
+async def _download_unavailable(
+    artist: str,
+    title: str,
+    target: Path,
+) -> bool:
+    """Try YouTube Music for a track that Yandex reports as unavailable."""
+    if not app_settings.youtube_fallback:
+        logger.info(f'skip unavailable {title}')
+        return False
+
+    logger.info(f'unavailable on yandex, trying youtube: {artist} - {title}')
+    return await download_from_youtube(f'{artist} {title}', target)
 
 
 def _get_tracks_from_csv(csv_path: Path) -> list[Track]:

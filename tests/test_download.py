@@ -147,7 +147,7 @@ async def test_download_tracks_skips_existing(
     assert _codec_info(raw).download_async.call_count == 0
 
 
-async def test_download_tracks_skips_unavailable(
+async def test_download_tracks_unavailable_skips_yandex(
     make_track: Callable[..., Track],
     make_yandex_track: Callable[..., object],
     tracks_dir: Path,
@@ -160,10 +160,51 @@ async def test_download_tracks_skips_unavailable(
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
 
+    await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert _codec_info(raw).download_async.call_count == 0
+
+
+async def test_download_tracks_unavailable_falls_back_to_youtube(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(artist='Artist', title='Title', available=False)
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+    yt = mocker.patch('app.refresh.download_from_youtube', new=mocker.AsyncMock(return_value=True))
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 1
+    assert yt.call_count == 1
+    assert yt.call_args.args[0] == 'Artist Title'
+
+
+async def test_download_tracks_unavailable_no_youtube_when_disabled(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    mocker.patch('app.refresh.app_settings.youtube_fallback', False)
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(available=False)
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+    yt = mocker.patch('app.refresh.download_from_youtube', new=mocker.AsyncMock(return_value=True))
+
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
     assert downloaded == 0
-    assert _codec_info(raw).download_async.call_count == 0
+    assert yt.call_count == 0
 
 
 async def test_download_tracks_skips_podcast(

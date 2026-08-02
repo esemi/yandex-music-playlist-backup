@@ -17,6 +17,12 @@ def _reset_shutdown() -> Iterator[None]:
     refresh._shutdown.clear()
 
 
+@pytest.fixture(autouse=True)
+def _no_network_youtube(mocker: MockerFixture) -> None:
+    """Never hit the real YouTube in tests; opt back in per-test if needed."""
+    mocker.patch('app.refresh.download_from_youtube', new=mocker.AsyncMock(return_value=False))
+
+
 @pytest.fixture
 def make_track() -> Callable[..., Track]:
     """Factory building a Track with sane defaults; override any field via kwargs."""
@@ -59,7 +65,7 @@ def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
         artist: str = 'Artist',
         title: str = 'Title',
         available: bool = True,
-        track_type: str = 'track',
+        track_type: str = 'music',
     ) -> object:
         codec_info = mocker.MagicMock()
         codec_info.codec = 'mp3'

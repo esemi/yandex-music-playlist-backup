@@ -20,7 +20,15 @@ Each snapshot is a plain CSV (`track_id, artist, title, added_at, is_deleted`), 
 grep, diff or import elsewhere. Service paths (logs / tracks / playlists dirs) are
 configurable via `app/settings.py` (env vars or `.env`).
 
+With `--download` the tool also fetches the audio as mp3. Tracks that Yandex reports as
+**unavailable** (pulled by the label, region-locked) fall back to **YouTube Music** via
+`yt-dlp` — controlled by the `youtube_fallback` setting (on by default). This needs
+`ffmpeg` on the system to transcode to mp3.
+
 ### Local setup
+
+Requires `ffmpeg` in `PATH` (for the YouTube mp3 fallback):
+
 ```shell
 python3.14 -m venv venv
 source venv/bin/activate
@@ -69,7 +77,7 @@ python -m app --username esemyon --proxy 127.0.0.1:1080
 ```
 
 ### TODO
+[x] добавить выкачивание не найденных треков с ютуба
 [ ] добавить доки по рсинку на плеер
-[ ] добавить выкачивание не найденных треков с ютуба
 [ ] [качать флаки](https://github.com/llistochek/yandex-music-downloader)
 [ ] переделываем в десктоп апку?
