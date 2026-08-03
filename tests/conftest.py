@@ -23,6 +23,12 @@ def _no_network_youtube(mocker: MockerFixture) -> None:
     mocker.patch('app.refresh.download_from_youtube', new=mocker.AsyncMock(return_value=False))
 
 
+@pytest.fixture(autouse=True)
+def _no_encrypted_stream(mocker: MockerFixture) -> None:
+    """Default get-file-info to 'nothing usable' so tests hit the mp3 path unless opted in."""
+    mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(return_value=None))
+
+
 @pytest.fixture
 def make_track() -> Callable[..., Track]:
     """Factory building a Track with sane defaults; override any field via kwargs."""
@@ -67,10 +73,15 @@ def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
         available: bool = True,
         track_type: str = 'music',
     ) -> object:
-        codec_info = mocker.MagicMock()
-        codec_info.codec = 'mp3'
-        codec_info.bitrate_in_kbps = 192
-        codec_info.download_async = mocker.AsyncMock()
+        # Two mp3 variants so tests can assert the best-bitrate pick, not just [-1].
+        low = mocker.MagicMock()
+        low.codec = 'mp3'
+        low.bitrate_in_kbps = 192
+        low.download_async = mocker.AsyncMock()
+        high = mocker.MagicMock()
+        high.codec = 'mp3'
+        high.bitrate_in_kbps = 320
+        high.download_async = mocker.AsyncMock()
 
         track = mocker.MagicMock()
         track.id = track_id
@@ -79,6 +90,6 @@ def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
         track.type = track_type
         track.artists = [mocker.MagicMock()]
         track.artists[0].name = artist
-        track.get_download_info_async = mocker.AsyncMock(return_value=[codec_info])
+        track.get_download_info_async = mocker.AsyncMock(return_value=[low, high])
         return track
     return _make

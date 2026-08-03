@@ -15,6 +15,7 @@ from yandex_music.exceptions import NetworkError, TimedOutError
 from yandex_music.utils.request_async import Request
 
 from app.settings import app_settings
+from app.yandex_lossless import download_best_encrypted
 from app.youtube import download_from_youtube
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,8 @@ logger = logging.getLogger(__name__)
 _FILENAME_UNSAFE = re.compile(r'[\\/:*?"<>|]+')
 # Most filesystems (ext4, apfs) cap a single filename at 255 bytes.
 _FILENAME_MAX_BYTES = 255
+# Every audio extension a track may already exist under, for skip-existing checks.
+_AUDIO_EXTENSIONS = ('.flac', '.m4a', '.mp3')
 _shutdown = asyncio.Event()
 
 
@@ -171,17 +174,23 @@ async def _download_tracks(client: ClientAsync, owner_id: str, csv_path: Path) -
 
     semaphore = asyncio.Semaphore(app_settings.download_concurrency)
     results = await asyncio.gather(*[
-        _download_one(track, dest_dir, semaphore)
+        _download_one(client, track, dest_dir, semaphore)
         for track in raw_tracks
     ])
     return sum(results)
 
 
-async def _download_one(track: YandexTrack, dest_dir: Path, semaphore: asyncio.Semaphore) -> bool:
+async def _download_one(
+    client: ClientAsync,
+    track: YandexTrack,
+    dest_dir: Path,
+    semaphore: asyncio.Semaphore,
+) -> bool:
     """Download a single track; return True if a new file was written.
 
-    Tracks that are unavailable on Yandex fall back to YouTube Music (opt-in via
-    `youtube_fallback`); everything else is downloaded straight from Yandex.
+    Cascade: best `get-file-info` codec (FLAC / FLAC-in-MP4 / AAC) -> legacy mp3 320
+    -> YouTube (for tracks Yandex reports as unavailable). The file extension follows
+    whichever source won (`.flac` / `.m4a` / `.mp3`).
     """
     if _shutdown.is_set():
         return False
@@ -191,9 +200,12 @@ async def _download_one(track: YandexTrack, dest_dir: Path, semaphore: asyncio.S
         return False
 
     artist = ', '.join(artist.name for artist in track.artists)
-    target = dest_dir / _track_filename(artist, track.title, str(track.id))
-    if target.exists():
-        logger.debug(f'skip existing {target.name}')
+    # Filename stem without extension; the winning source decides the real one. We
+    # never touch the extension via Path.with_suffix — titles contain dots ("T.N.T").
+    stem = _track_filename(artist, track.title, str(track.id))
+
+    if _already_downloaded(dest_dir, stem):
+        logger.debug(f'skip existing {artist} - {track.title}')
         return False
 
     async with semaphore:
@@ -201,16 +213,33 @@ async def _download_one(track: YandexTrack, dest_dir: Path, semaphore: asyncio.S
             return False
 
         if not track.available:
-            return await _download_unavailable(artist, track.title, target)
+            return await _download_unavailable(artist, track.title, dest_dir / f'{stem}.mp3')
 
-        try:
-            codec_info = (await track.get_download_info_async(timeout=10))[-1]
-            logger.info(f'downloading {target} {codec_info.codec} {codec_info.bitrate_in_kbps}')
-            await codec_info.download_async(str(target), timeout=25)
-            logger.info('downloading success')
-        except (TimedOutError, NetworkError) as exc:
-            logger.warning(f'downloading failed {exc}')
-            return False
+        if app_settings.prefer_lossless:
+            if await download_best_encrypted(client, str(track.id), dest_dir, stem):
+                return True
+            logger.info(f'no get-file-info stream for {artist} - {track.title}, falling back to mp3')
+
+        return await _download_mp3(track, dest_dir / f'{stem}.mp3')
+
+
+def _already_downloaded(dest_dir: Path, stem: str) -> bool:
+    """True if this track is already on disk in any supported audio format."""
+    return any((dest_dir / f'{stem}{ext}').exists() for ext in _AUDIO_EXTENSIONS)
+
+
+async def _download_mp3(track: YandexTrack, target: Path) -> bool:
+    """Download the best available mp3 variant (highest bitrate) via the legacy API."""
+    try:
+        infos = await track.get_download_info_async(timeout=10)
+        mp3_infos = [info for info in infos if info.codec == 'mp3']
+        codec_info = max(mp3_infos or infos, key=lambda info: info.bitrate_in_kbps)
+        logger.info(f'downloading {target} {codec_info.codec} {codec_info.bitrate_in_kbps}')
+        await codec_info.download_async(str(target), timeout=25)
+        logger.info('downloading success')
+    except (TimedOutError, NetworkError) as exc:
+        logger.warning(f'downloading failed {exc}')
+        return False
 
     return True
 
@@ -280,18 +309,23 @@ def _request_shutdown(sig: signal.Signals) -> None:
     _shutdown.set()
 
 
-def _track_filename(artist: str, title: str, track_id: str, suffix: str = '.mp3') -> str:
-    """Build a filesystem-safe `<artist> - <title> [<track_id>].mp3` name.
+def _track_filename(artist: str, title: str, track_id: str) -> str:
+    """Build a filesystem-safe filename *stem* `<artist> - <title> [<track_id>]`.
 
-    The stem is truncated so the whole name fits into the filesystem byte limit
-    (compilations with dozens of artists easily blow past 255 bytes otherwise).
-    The `track_id` tail is always kept intact, so truncated names stay unique.
+    Returns the name without extension — the caller appends `.flac` / `.m4a` / `.mp3`
+    by concatenation (never `Path.with_suffix`, since titles contain dots like "T.N.T").
+
+    The stem is truncated so the whole name — plus the longest audio extension — fits
+    into the filesystem byte limit (compilations with dozens of artists easily blow
+    past 255 bytes otherwise). The `[track_id]` tail is always kept intact, so
+    truncated names stay unique.
     """
     raw = f'{artist} - {title}'
     safe = _FILENAME_UNSAFE.sub('_', raw).strip()
 
-    tail = f' [{track_id}]{suffix}'
-    budget = _FILENAME_MAX_BYTES - len(tail.encode('utf-8'))
+    max_ext_len = max(len(ext.encode('utf-8')) for ext in _AUDIO_EXTENSIONS)
+    tail = f' [{track_id}]'
+    budget = _FILENAME_MAX_BYTES - len(tail.encode('utf-8')) - max_ext_len
     encoded = safe.encode('utf-8')
     if len(encoded) > budget:
         # cut on a byte boundary, then drop a possibly broken trailing char

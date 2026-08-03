@@ -1,0 +1,139 @@
+"""Tests for the best-quality (get-file-info) download helpers."""
+from pathlib import Path
+
+from app.yandex_lossless import (
+    _CTR_NONCE,
+    _build_get_file_info_params,
+    _decrypt_ctr,
+    download_best_encrypted,
+)
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from pytest_mock import MockerFixture
+
+
+def _encrypt(plaintext: bytes, key_hex: str) -> bytes:
+    encryptor = Cipher(algorithms.AES(bytes.fromhex(key_hex)), modes.CTR(_CTR_NONCE)).encryptor()
+    return encryptor.update(plaintext) + encryptor.finalize()
+
+
+def test_build_params_has_required_fields() -> None:
+    params = _build_get_file_info_params('12345')
+
+    assert params['trackId'] == '12345'
+    assert params['quality'] == 'lossless'
+    assert params['transports'] == 'encraw'
+    assert 'flac' in str(params['codecs'])
+    assert isinstance(params['ts'], int)
+    assert isinstance(params['sign'], str) and params['sign']
+
+
+def test_build_params_sign_is_deterministic_for_fixed_ts(mocker: MockerFixture) -> None:
+    mocker.patch('app.yandex_lossless.time.time', return_value=1_700_000_000)
+
+    first = _build_get_file_info_params('42')
+    second = _build_get_file_info_params('42')
+
+    assert first['sign'] == second['sign']
+    # different track -> different signature
+    assert _build_get_file_info_params('43')['sign'] != first['sign']
+
+
+def test_decrypt_ctr_round_trip() -> None:
+    key_hex = '00112233445566778899aabbccddeeff'
+    plaintext = b'the quick brown fox jumps over the lazy dog' * 3
+
+    assert _decrypt_ctr(_encrypt(plaintext, key_hex), key_hex) == plaintext
+
+
+def _client_returning(mocker: MockerFixture, codec: str, ciphertext: bytes, key_hex: str) -> object:
+    client = mocker.MagicMock()
+    client.request.get = mocker.AsyncMock(return_value={
+        'download_info': {'codec': codec, 'urls': ['https://host/stream'], 'key': key_hex},
+    })
+    client.request.retrieve = mocker.AsyncMock(return_value=ciphertext)
+    return client
+
+
+async def test_download_flac_writes_flac_extension(tmp_path: Path, mocker: MockerFixture) -> None:
+    key_hex = '00112233445566778899aabbccddeeff'
+    plaintext = b'FLAC-stream-bytes'
+    client = _client_returning(mocker, 'flac', _encrypt(plaintext, key_hex), key_hex)
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]')
+
+    assert result == tmp_path / 'Artist - Title [1].flac'
+    assert result is not None and result.read_bytes() == plaintext
+
+
+async def test_download_flac_mp4_writes_m4a(tmp_path: Path, mocker: MockerFixture) -> None:
+    """FLAC-in-MP4 is lossless but lives in an .m4a container."""
+    key_hex = '00112233445566778899aabbccddeeff'
+    client = _client_returning(mocker, 'flac-mp4', _encrypt(b'x', key_hex), key_hex)
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]')
+
+    assert result == tmp_path / 'Artist - Title [1].m4a'
+    assert result is not None and result.exists()
+
+
+async def test_download_aac_writes_m4a(tmp_path: Path, mocker: MockerFixture) -> None:
+    key_hex = '00112233445566778899aabbccddeeff'
+    client = _client_returning(mocker, 'aac', _encrypt(b'x', key_hex), key_hex)
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]')
+
+    assert result == tmp_path / 'Artist - Title [1].m4a'
+
+
+async def test_download_keeps_dots_in_title(tmp_path: Path, mocker: MockerFixture) -> None:
+    """Dotted titles must not be mangled (regression: with_suffix ate 'T.N.T [id]')."""
+    key_hex = '00112233445566778899aabbccddeeff'
+    client = _client_returning(mocker, 'flac', _encrypt(b'x', key_hex), key_hex)
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'AC_DC - T.N.T [42]')
+
+    assert result == tmp_path / 'AC_DC - T.N.T [42].flac'
+
+
+async def test_download_returns_none_for_unknown_codec(tmp_path: Path, mocker: MockerFixture) -> None:
+    client = mocker.MagicMock()
+    client.request.get = mocker.AsyncMock(return_value={
+        'download_info': {'codec': 'weird', 'urls': ['https://host/s'], 'key': 'ab'},
+    })
+    client.request.retrieve = mocker.AsyncMock()
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'stem')
+
+    assert result is None
+    assert client.request.retrieve.call_count == 0
+
+
+async def test_download_returns_none_on_empty_response(tmp_path: Path, mocker: MockerFixture) -> None:
+    client = mocker.MagicMock()
+    client.request.get = mocker.AsyncMock(return_value=None)
+
+    assert await download_best_encrypted(client, '1', tmp_path, 'stem') is None
+
+
+async def test_download_swallows_get_network_error(tmp_path: Path, mocker: MockerFixture) -> None:
+    from yandex_music.exceptions import NetworkError
+
+    client = mocker.MagicMock()
+    client.request.get = mocker.AsyncMock(side_effect=NetworkError('boom'))
+
+    assert await download_best_encrypted(client, '1', tmp_path, 'stem') is None
+
+
+async def test_download_swallows_stream_timeout(tmp_path: Path, mocker: MockerFixture) -> None:
+    from yandex_music.exceptions import TimedOutError
+
+    client = mocker.MagicMock()
+    client.request.get = mocker.AsyncMock(return_value={
+        'download_info': {'codec': 'flac', 'urls': ['https://host/s'], 'key': 'ab'},
+    })
+    client.request.retrieve = mocker.AsyncMock(side_effect=TimedOutError())
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'stem')
+
+    assert result is None
+    assert not (tmp_path / 'stem.flac').exists()

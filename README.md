@@ -20,10 +20,19 @@ Each snapshot is a plain CSV (`track_id, artist, title, added_at, is_deleted`), 
 grep, diff or import elsewhere. Service paths (logs / tracks / playlists dirs) are
 configurable via `app/settings.py` (env vars or `.env`).
 
-With `--download` the tool also fetches the audio as mp3. Tracks that Yandex reports as
-**unavailable** (pulled by the label, region-locked) fall back to **YouTube Music** via
-`yt-dlp` — controlled by the `youtube_fallback` setting (on by default). This needs
-`ffmpeg` on the system to transcode to mp3.
+With `--download` the tool fetches new tracks at the best quality the Yandex
+`get-file-info` endpoint offers, decrypting the encrypted stream. In practice that's
+**lossless FLAC** — either a plain `.flac` or FLAC-in-MP4 (`.m4a`), both lossless — or,
+when the track has no lossless master, a high-bitrate **AAC** (`.m4a`). Only if
+`get-file-info` yields nothing usable does it fall back to the legacy **mp3 320** API,
+and tracks Yandex reports as **unavailable** (pulled by the label, region-locked) fall
+back to **YouTube Music** via `yt-dlp` — controlled by the `youtube_fallback` setting
+(on by default). So the cascade is FLAC/AAC (`.flac`/`.m4a`) → mp3 320 → YouTube. The
+`get-file-info` path is enabled by `prefer_lossless` (on by default); lossless files
+are noticeably larger. The YouTube fallback needs `ffmpeg` to transcode to mp3.
+
+Already-downloaded tracks are skipped regardless of format (`.flac`, `.m4a` or `.mp3`),
+so old mp3 files are left untouched — re-fetching them in FLAC is a manual job.
 
 ### Local setup
 

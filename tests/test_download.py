@@ -9,11 +9,12 @@ from pytest_mock import MockerFixture
 
 
 @pytest.mark.parametrize(('artist', 'title', 'expected'), [
-    ('Nirvana', 'Come as You Are', 'Nirvana - Come as You Are [42].mp3'),
-    ('AC/DC', 'T.N.T', 'AC_DC - T.N.T [42].mp3'),
-    ('a?b', 'c:d*e', 'a_b - c_d_e [42].mp3'),
+    ('Nirvana', 'Come as You Are', 'Nirvana - Come as You Are [42]'),
+    ('AC/DC', 'T.N.T', 'AC_DC - T.N.T [42]'),
+    ('a?b', 'c:d*e', 'a_b - c_d_e [42]'),
 ])
 def test_track_filename(artist: str, title: str, expected: str) -> None:
+    """_track_filename returns the stem; the extension is appended by the caller."""
     result = _track_filename(artist, title, '42')
 
     assert result == expected
@@ -22,8 +23,9 @@ def test_track_filename(artist: str, title: str, expected: str) -> None:
 def test_track_filename_truncates_long_name() -> None:
     result = _track_filename('Artist', 'x' * 500, '42')
 
-    assert len(result.encode('utf-8')) <= 255
-    assert result.endswith(' [42].mp3')
+    # stem + longest audio extension (.flac) must still fit the fs byte limit
+    assert len(f'{result}.flac'.encode()) <= 255
+    assert result.endswith(' [42]')
 
 
 def test_track_filename_truncation_keeps_valid_utf8() -> None:
@@ -47,8 +49,11 @@ def _seed_csv(csv_path: Path, make_track: Callable[..., Track], track_ids: list[
 
 
 def _codec_info(track: object) -> object:
-    """Reach into the mocked yandex Track for its single codec_info download stub."""
-    return track.get_download_info_async.return_value[0]
+    """Reach into the mocked yandex Track for the mp3 variant we actually download.
+
+    The mp3 path picks the highest bitrate, which is the last variant in the factory.
+    """
+    return track.get_download_info_async.return_value[-1]
 
 
 async def test_download_tracks_downloads_new(
@@ -124,27 +129,6 @@ async def test_download_tracks_stops_on_shutdown(
 
     assert downloaded == 0
     assert _codec_info(raw[0]).download_async.call_count == 0
-
-
-async def test_download_tracks_skips_existing(
-    make_track: Callable[..., Track],
-    make_yandex_track: Callable[..., object],
-    tracks_dir: Path,
-    tmp_path: Path,
-    mocker: MockerFixture,
-) -> None:
-    csv_path = tmp_path / 'user.csv'
-    _seed_csv(csv_path, make_track, ['1'])
-    raw = make_yandex_track(artist='Artist', title='Title')
-    (tracks_dir / 'user').mkdir()
-    (tracks_dir / 'user' / 'Artist - Title [1].mp3').write_bytes(b'')
-    client = mocker.MagicMock()
-    client.tracks = mocker.AsyncMock(return_value=[raw])
-
-    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
-
-    assert downloaded == 0
-    assert _codec_info(raw).download_async.call_count == 0
 
 
 async def test_download_tracks_unavailable_skips_yandex(
@@ -262,3 +246,107 @@ async def test_download_tracks_timeout_not_counted(
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
     assert downloaded == 0
+
+
+async def test_download_tracks_encrypted_writes_flac(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(artist='Artist', title='Title')
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+
+    async def _fake_stream(_client: object, _track_id: str, dest_dir: Path, stem: str, **_kw: object) -> Path:
+        target = dest_dir / f'{stem}.flac'
+        target.write_bytes(b'flac')
+        return target
+
+    mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(side_effect=_fake_stream))
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 1
+    assert (tracks_dir / 'user' / 'Artist - Title [1].flac').exists()
+    # mp3 path must not be touched when the encrypted stream succeeds
+    assert _codec_info(raw).download_async.call_count == 0
+
+
+async def test_download_tracks_encrypted_writes_m4a(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    """FLAC-in-MP4 / AAC come back as .m4a — that still counts as a successful download."""
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(artist='Artist', title='Title')
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+
+    async def _fake_stream(_client: object, _track_id: str, dest_dir: Path, stem: str, **_kw: object) -> Path:
+        target = dest_dir / f'{stem}.m4a'
+        target.write_bytes(b'm4a')
+        return target
+
+    mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(side_effect=_fake_stream))
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 1
+    assert (tracks_dir / 'user' / 'Artist - Title [1].m4a').exists()
+    assert _codec_info(raw).download_async.call_count == 0
+
+
+async def test_download_tracks_falls_back_to_mp3_when_no_stream(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(artist='Artist', title='Title')
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+    # _no_encrypted_stream autouse fixture already returns None
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 1
+    # highest-bitrate mp3 variant is chosen, not the last-in-list-by-accident
+    chosen = _codec_info(raw)
+    assert chosen.bitrate_in_kbps == 320
+    assert chosen.download_async.call_count == 1
+
+
+@pytest.mark.parametrize('existing_ext', ['.flac', '.m4a', '.mp3'])
+async def test_download_tracks_skips_existing_any_format(
+    existing_ext: str,
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(artist='Artist', title='Title')
+    (tracks_dir / 'user').mkdir()
+    (tracks_dir / 'user' / f'Artist - Title [1]{existing_ext}').write_bytes(b'')
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+    stream = mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(return_value=None))
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 0
+    assert stream.call_count == 0
+    assert _codec_info(raw).download_async.call_count == 0
