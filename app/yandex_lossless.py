@@ -14,6 +14,7 @@ import base64
 import hashlib
 import hmac
 import logging
+import os
 import time
 from pathlib import Path
 
@@ -50,6 +51,7 @@ async def download_best_encrypted(
     track_id: str,
     dest_dir: Path,
     stem: str,
+    has_mp3: bool,
     timeout: float = 25,
 ) -> Path | None:
     """Download `track_id` at the best codec `get-file-info` offers.
@@ -85,6 +87,10 @@ async def download_best_encrypted(
         return None
 
     extension, lossless = fmt
+    if has_mp3 and extension == '.mp3':
+        logger.info('not found better than mp3 quality')
+        return None
+
     try:
         encrypted = await client.request.retrieve(urls[0], timeout=timeout)
     except (TimedOutError, NetworkError) as exc:
@@ -95,6 +101,10 @@ async def download_best_encrypted(
     target.write_bytes(_decrypt_ctr(encrypted, key_hex))
     tag = 'lossless' if lossless else str(codec)
     logger.info(f'downloaded {tag} {target.name}')
+
+    if extension != '.mp3' and (dest_dir / f'{stem}.mp3').exists():
+        os.unlink(dest_dir / f'{stem}.mp3')
+
     return target
 
 

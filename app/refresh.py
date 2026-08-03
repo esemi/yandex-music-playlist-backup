@@ -204,8 +204,15 @@ async def _download_one(
     # never touch the extension via Path.with_suffix — titles contain dots ("T.N.T").
     stem = _track_filename(artist, track.title, str(track.id))
 
-    if _already_downloaded(dest_dir, stem):
-        logger.debug(f'skip existing {artist} - {track.title}')
+    has_flac = any((dest_dir / f'{stem}{ext}').exists() for ext in ('.flac', '.m4a'))
+    has_mp3 = (dest_dir / f'{stem}.mp3').exists()
+
+    if has_flac:
+        logger.info(f'skip existing flac for {artist} - {track.title}')
+        return False
+
+    if not track.available and has_mp3:
+        logger.info(f'skip existing mp3 for unavailable {artist} - {track.title}')
         return False
 
     async with semaphore:
@@ -215,17 +222,14 @@ async def _download_one(
         if not track.available:
             return await _download_unavailable(artist, track.title, dest_dir / f'{stem}.mp3')
 
-        if app_settings.prefer_lossless:
-            if await download_best_encrypted(client, str(track.id), dest_dir, stem):
-                return True
-            logger.info(f'no get-file-info stream for {artist} - {track.title}, falling back to mp3')
+        if await download_best_encrypted(client, str(track.id), dest_dir, stem, has_mp3):
+            return True
 
+        if has_mp3:
+            return False
+
+        logger.info(f'no get-file-info stream for {artist} - {track.title}, falling back to mp3 from yandex')
         return await _download_mp3(track, dest_dir / f'{stem}.mp3')
-
-
-def _already_downloaded(dest_dir: Path, stem: str) -> bool:
-    """True if this track is already on disk in any supported audio format."""
-    return any((dest_dir / f'{stem}{ext}').exists() for ext in _AUDIO_EXTENSIONS)
 
 
 async def _download_mp3(track: YandexTrack, target: Path) -> bool:

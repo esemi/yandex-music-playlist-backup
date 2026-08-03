@@ -18,9 +18,6 @@ class Settings(BaseSettings):
     yandex_token: str | None = None
     download_concurrency: int = 8
 
-    # Prefer lossless FLAC; falls back to mp3 320 when a track has no lossless variant.
-    prefer_lossless: bool = True
-
     youtube_fallback: bool = True
     youtube_audio_quality: int = 320
     youtube_cookies_file: Path | None = None  # Netscape cookies.txt for authed downloads from youtube

@@ -59,7 +59,7 @@ async def test_download_flac_writes_flac_extension(tmp_path: Path, mocker: Mocke
     plaintext = b'FLAC-stream-bytes'
     client = _client_returning(mocker, 'flac', _encrypt(plaintext, key_hex), key_hex)
 
-    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]')
+    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]', has_mp3=False)
 
     assert result == tmp_path / 'Artist - Title [1].flac'
     assert result is not None and result.read_bytes() == plaintext
@@ -70,7 +70,7 @@ async def test_download_flac_mp4_writes_m4a(tmp_path: Path, mocker: MockerFixtur
     key_hex = '00112233445566778899aabbccddeeff'
     client = _client_returning(mocker, 'flac-mp4', _encrypt(b'x', key_hex), key_hex)
 
-    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]')
+    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]', has_mp3=False)
 
     assert result == tmp_path / 'Artist - Title [1].m4a'
     assert result is not None and result.exists()
@@ -80,7 +80,7 @@ async def test_download_aac_writes_m4a(tmp_path: Path, mocker: MockerFixture) ->
     key_hex = '00112233445566778899aabbccddeeff'
     client = _client_returning(mocker, 'aac', _encrypt(b'x', key_hex), key_hex)
 
-    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]')
+    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]', has_mp3=False)
 
     assert result == tmp_path / 'Artist - Title [1].m4a'
 
@@ -90,9 +90,49 @@ async def test_download_keeps_dots_in_title(tmp_path: Path, mocker: MockerFixtur
     key_hex = '00112233445566778899aabbccddeeff'
     client = _client_returning(mocker, 'flac', _encrypt(b'x', key_hex), key_hex)
 
-    result = await download_best_encrypted(client, '1', tmp_path, 'AC_DC - T.N.T [42]')
+    result = await download_best_encrypted(client, '1', tmp_path, 'AC_DC - T.N.T [42]', has_mp3=False)
 
     assert result == tmp_path / 'AC_DC - T.N.T [42].flac'
+
+
+async def test_download_returns_none_when_server_offers_only_mp3_and_mp3_exists(
+    tmp_path: Path, mocker: MockerFixture,
+) -> None:
+    """If the best the server has is mp3 and we already hold an mp3, don't re-download."""
+    key_hex = '00112233445566778899aabbccddeeff'
+    client = _client_returning(mocker, 'mp3', _encrypt(b'x', key_hex), key_hex)
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'stem', has_mp3=True)
+
+    assert result is None
+    # stream must not even be fetched
+    assert client.request.retrieve.call_count == 0
+
+
+async def test_download_mp3_when_no_local_mp3(tmp_path: Path, mocker: MockerFixture) -> None:
+    """Server-side mp3 is still downloaded when nothing is on disk yet."""
+    key_hex = '00112233445566778899aabbccddeeff'
+    plaintext = b'mp3-bytes'
+    client = _client_returning(mocker, 'mp3', _encrypt(plaintext, key_hex), key_hex)
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'stem', has_mp3=False)
+
+    assert result == tmp_path / 'stem.mp3'
+    assert result is not None and result.read_bytes() == plaintext
+
+
+async def test_download_lossless_removes_stale_mp3(tmp_path: Path, mocker: MockerFixture) -> None:
+    """Upgrading an existing mp3 to lossless drops the old mp3 file."""
+    key_hex = '00112233445566778899aabbccddeeff'
+    client = _client_returning(mocker, 'flac', _encrypt(b'x', key_hex), key_hex)
+    stale_mp3 = tmp_path / 'stem.mp3'
+    stale_mp3.write_bytes(b'old')
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'stem', has_mp3=True)
+
+    assert result == tmp_path / 'stem.flac'
+    assert result is not None and result.exists()
+    assert not stale_mp3.exists()
 
 
 async def test_download_returns_none_for_unknown_codec(tmp_path: Path, mocker: MockerFixture) -> None:
@@ -102,7 +142,7 @@ async def test_download_returns_none_for_unknown_codec(tmp_path: Path, mocker: M
     })
     client.request.retrieve = mocker.AsyncMock()
 
-    result = await download_best_encrypted(client, '1', tmp_path, 'stem')
+    result = await download_best_encrypted(client, '1', tmp_path, 'stem', has_mp3=False)
 
     assert result is None
     assert client.request.retrieve.call_count == 0
@@ -112,7 +152,7 @@ async def test_download_returns_none_on_empty_response(tmp_path: Path, mocker: M
     client = mocker.MagicMock()
     client.request.get = mocker.AsyncMock(return_value=None)
 
-    assert await download_best_encrypted(client, '1', tmp_path, 'stem') is None
+    assert await download_best_encrypted(client, '1', tmp_path, 'stem', has_mp3=False) is None
 
 
 async def test_download_swallows_get_network_error(tmp_path: Path, mocker: MockerFixture) -> None:
@@ -121,7 +161,7 @@ async def test_download_swallows_get_network_error(tmp_path: Path, mocker: Mocke
     client = mocker.MagicMock()
     client.request.get = mocker.AsyncMock(side_effect=NetworkError('boom'))
 
-    assert await download_best_encrypted(client, '1', tmp_path, 'stem') is None
+    assert await download_best_encrypted(client, '1', tmp_path, 'stem', has_mp3=False) is None
 
 
 async def test_download_swallows_stream_timeout(tmp_path: Path, mocker: MockerFixture) -> None:
@@ -133,7 +173,7 @@ async def test_download_swallows_stream_timeout(tmp_path: Path, mocker: MockerFi
     })
     client.request.retrieve = mocker.AsyncMock(side_effect=TimedOutError())
 
-    result = await download_best_encrypted(client, '1', tmp_path, 'stem')
+    result = await download_best_encrypted(client, '1', tmp_path, 'stem', has_mp3=False)
 
     assert result is None
     assert not (tmp_path / 'stem.flac').exists()
