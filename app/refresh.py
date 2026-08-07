@@ -196,7 +196,7 @@ async def _download_one(
         return False
 
     if track.type != 'music':
-        logger.info(f'skip not music {track.title} {track.type}')
+        logger.info(f'skip not a music track {track.title} {track.type}')
         return False
 
     artist = ', '.join(artist.name for artist in track.artists)
@@ -208,11 +208,11 @@ async def _download_one(
     has_mp3 = (dest_dir / f'{stem}.mp3').exists()
 
     if has_flac:
-        logger.info(f'skip existing flac for {artist} - {track.title}')
+        logger.debug(f'skip existing flac for {artist} - {track.title}')
         return False
 
     if not track.available and has_mp3:
-        logger.info(f'skip existing mp3 for unavailable {artist} - {track.title}')
+        logger.debug(f'skip existing mp3 for unavailable {artist} - {track.title}')
         return False
 
     async with semaphore:
@@ -254,10 +254,6 @@ async def _download_unavailable(
     target: Path,
 ) -> bool:
     """Try YouTube Music for a track that Yandex reports as unavailable."""
-    if not app_settings.youtube_fallback:
-        logger.info(f'skip unavailable {title}')
-        return False
-
     logger.info(f'unavailable on yandex, trying youtube: {artist} - {title}')
     return await download_from_youtube(f'{artist} {title}', target)
 

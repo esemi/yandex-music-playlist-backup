@@ -88,7 +88,7 @@ async def download_best_encrypted(
 
     extension, lossless = fmt
     if has_mp3 and extension == '.mp3':
-        logger.info('not found better than mp3 quality')
+        logger.debug('not found better than mp3 quality')
         return None
 
     try:
