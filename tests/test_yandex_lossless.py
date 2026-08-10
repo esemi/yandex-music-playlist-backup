@@ -65,15 +65,39 @@ async def test_download_flac_writes_flac_extension(tmp_path: Path, mocker: Mocke
     assert result is not None and result.read_bytes() == plaintext
 
 
-async def test_download_flac_mp4_writes_m4a(tmp_path: Path, mocker: MockerFixture) -> None:
-    """FLAC-in-MP4 is lossless but lives in an .m4a container."""
+async def test_download_flac_mp4_transcoded_to_flac(tmp_path: Path, mocker: MockerFixture) -> None:
+    """FLAC-in-MP4 is lossless and gets repacked out of its MP4 container into a .flac."""
     key_hex = '00112233445566778899aabbccddeeff'
     client = _client_returning(mocker, 'flac-mp4', _encrypt(b'x', key_hex), key_hex)
 
+    def _fake_transcode(source: Path, target: Path) -> bool:
+        assert source.exists()  # the raw MP4 temp is on disk when we're called
+        target.write_bytes(b'flac')
+        return True
+
+    transcode = mocker.patch('app.yandex_lossless.transcode_m4a_to_flac', side_effect=_fake_transcode)
+
     result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]', has_mp3=False)
 
-    assert result == tmp_path / 'Artist - Title [1].m4a'
-    assert result is not None and result.exists()
+    assert result == tmp_path / 'Artist - Title [1].flac'
+    assert result is not None and result.read_bytes() == b'flac'
+    assert transcode.call_count == 1
+    # the raw MP4 temp file must be cleaned up
+    assert not (tmp_path / 'Artist - Title [1].flacmp4.tmp').exists()
+
+
+async def test_download_flac_mp4_returns_none_on_transcode_failure(
+    tmp_path: Path, mocker: MockerFixture,
+) -> None:
+    """A failed ffmpeg transcode falls through to None (caller drops to mp3 fallback)."""
+    key_hex = '00112233445566778899aabbccddeeff'
+    client = _client_returning(mocker, 'flac-mp4', _encrypt(b'x', key_hex), key_hex)
+    mocker.patch('app.yandex_lossless.transcode_m4a_to_flac', return_value=False)
+
+    result = await download_best_encrypted(client, '1', tmp_path, 'Artist - Title [1]', has_mp3=False)
+
+    assert result is None
+    assert not (tmp_path / 'Artist - Title [1].flacmp4.tmp').exists()
 
 
 async def test_download_aac_writes_m4a(tmp_path: Path, mocker: MockerFixture) -> None:

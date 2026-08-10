@@ -22,21 +22,24 @@ configurable via `app/settings.py` (env vars or `.env`).
 
 With `--download` the tool fetches new tracks at the best quality the Yandex
 `get-file-info` endpoint offers, decrypting the encrypted stream. In practice that's
-**lossless FLAC** — either a plain `.flac` or FLAC-in-MP4 (`.m4a`), both lossless — or,
-when the track has no lossless master, a high-bitrate **AAC** (`.m4a`). Only if
-`get-file-info` yields nothing usable does it fall back to the legacy **mp3 320** API,
-and tracks Yandex reports as **unavailable** (pulled by the label, region-locked) fall
-back to **YouTube Music** via `yt-dlp` — controlled by the `youtube_fallback` setting
-(on by default). So the cascade is FLAC/AAC (`.flac`/`.m4a`) → mp3 320 → YouTube. The
-`get-file-info` path is enabled by `prefer_lossless` (on by default); lossless files
-are noticeably larger. The YouTube fallback needs `ffmpeg` to transcode to mp3.
+**lossless FLAC**, always stored as `.flac`: a plain `.flac` stream is written directly,
+and FLAC-in-MP4 is transcoded out of its MP4 container into `.flac` (lossless — FLAC
+stays FLAC, only the container changes) because some players handle a bare `.flac`
+better. When the track has no lossless master, a high-bitrate **AAC** is kept as `.m4a`
+(re-encoding lossy AAC into FLAC would only bloat it). Only if `get-file-info` yields
+nothing usable does it fall back to the legacy **mp3 320** API, and tracks Yandex
+reports as **unavailable** (pulled by the label, region-locked) fall back to **YouTube
+Music** via `yt-dlp` — controlled by the `youtube_fallback` setting (on by default). So
+the cascade is FLAC (`.flac`) / AAC (`.m4a`) → mp3 320 → YouTube. The `get-file-info`
+path is enabled by `prefer_lossless` (on by default); lossless files are noticeably
+larger. Both the FLAC-in-MP4 transcode and the YouTube fallback need `ffmpeg`.
 
 Already-downloaded tracks are skipped regardless of format (`.flac`, `.m4a` or `.mp3`),
 so old mp3 files are left untouched — re-fetching them in FLAC is a manual job.
 
 ### Local setup
 
-Requires `ffmpeg` in `PATH` (for the YouTube mp3 fallback):
+Requires `ffmpeg` in `PATH` (for the FLAC-in-MP4 transcode and the YouTube mp3 fallback):
 
 ```shell
 python3.14 -m venv venv

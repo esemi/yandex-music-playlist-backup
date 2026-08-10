@@ -7,8 +7,10 @@ encrypted stream. We replicate that here, reusing the client's own request objec
 proxy/auth headers keep working) and the library's signing key.
 
 On `quality=lossless` the server returns the best codec it can for the track:
-`flac` / `flac-mp4` (both lossless), or an AAC variant, or `mp3`. The file extension
-follows the *container*, not the codec — FLAC-in-MP4 is a valid `.m4a`, not a `.flac`.
+`flac` / `flac-mp4` (both lossless), or an AAC variant, or `mp3`. Both lossless codecs
+are stored as `.flac`: raw `flac` is already there, and `flac-mp4` is transcoded out of
+its MP4 container (lossless — see app.transcode) because some players handle a bare
+`.flac` better. Lossy AAC stays `.m4a`; repacking it into FLAC would only bloat it.
 """
 import base64
 import hashlib
@@ -23,6 +25,8 @@ from yandex_music import ClientAsync
 from yandex_music.exceptions import NetworkError, TimedOutError
 from yandex_music.utils.sign_request import DEFAULT_SIGN_KEY
 
+from app.transcode import transcode_m4a_to_flac
+
 logger = logging.getLogger(__name__)
 
 _GET_FILE_INFO_URL = 'https://api.music.yandex.net/get-file-info'
@@ -31,16 +35,17 @@ _QUALITY_LOSSLESS = 'lossless'
 # encraw streams are AES-128-CTR with a fixed all-zero 16-byte counter block.
 _CTR_NONCE = bytes(16)
 
-# codec (as returned by get-file-info) -> (file extension, is it lossless).
-# The extension is the *container*: FLAC-in-MP4 is a .m4a, not a .flac.
-_CODEC_FORMATS: dict[str, tuple[str, bool]] = {
-    'flac': ('.flac', True),
-    'flac-mp4': ('.m4a', True),
-    'aac': ('.m4a', False),
-    'he-aac': ('.m4a', False),
-    'aac-mp4': ('.m4a', False),
-    'he-aac-mp4': ('.m4a', False),
-    'mp3': ('.mp3', False),
+# codec (as returned by get-file-info) -> (final extension, is it lossless, needs transcode).
+# `flac-mp4` is lossless FLAC inside an MP4 container: we store it as `.flac` by
+# transcoding out of the container (lossless). Everything else is written as-is.
+_CODEC_FORMATS: dict[str, tuple[str, bool, bool]] = {
+    'flac': ('.flac', True, False),
+    'flac-mp4': ('.flac', True, True),
+    'aac': ('.m4a', False, False),
+    'he-aac': ('.m4a', False, False),
+    'aac-mp4': ('.m4a', False, False),
+    'he-aac-mp4': ('.m4a', False, False),
+    'mp3': ('.mp3', False, False),
 }
 # Codecs we ask for, in the order we prefer them (server still decides what it serves).
 _CODECS = ','.join(_CODEC_FORMATS.keys())
@@ -86,7 +91,7 @@ async def download_best_encrypted(
         logger.debug(f'unusable get-file-info for {track_id} (codec={codec}, has_key={bool(key_hex)})')
         return None
 
-    extension, lossless = fmt
+    extension, lossless, needs_transcode = fmt
     if has_mp3 and extension == '.mp3':
         logger.debug('not found better than mp3 quality')
         return None
@@ -97,8 +102,21 @@ async def download_best_encrypted(
         logger.warning(f'stream download failed for {track_id}: {exc}')
         return None
 
+    decrypted = _decrypt_ctr(encrypted, key_hex)
     target = dest_dir / f'{stem}{extension}'
-    target.write_bytes(_decrypt_ctr(encrypted, key_hex))
+
+    if needs_transcode:
+        # FLAC-in-MP4: write the raw MP4 to a temp file, then repack losslessly to .flac.
+        tmp_m4a = dest_dir / f'{stem}.flacmp4.tmp'
+        tmp_m4a.write_bytes(decrypted)
+        try:
+            if not transcode_m4a_to_flac(tmp_m4a, target):
+                return None
+        finally:
+            tmp_m4a.unlink(missing_ok=True)
+    else:
+        target.write_bytes(decrypted)
+
     tag = 'lossless' if lossless else str(codec)
     logger.info(f'downloaded {tag} {target.name}')
 
