@@ -625,6 +625,7 @@ track_id,artist,title,added_at,is_deleted
 153375689,"Accept, Rob Halford, Matthias Jabs, Rex Brown, Jason Bowld",Balls to the Wall,2026-07-30T18:57:55.027287,0
 15356320,Spiderbait,Reach For The Sky,2025-04-22T18:12:52.158135,0
 15359454,Ghost,Crucified,2025-04-22T18:12:52.158135,0
+153622103,URATSAKIDOGI,Чувствуешь?,2026-08-08T15:12:02.706431,0
 1538208,Sabaton,The Final Solution,2025-04-22T18:12:52.158135,0
 15387033,Dick Dale & His Del-Tones,Misirlou,2025-04-22T18:12:52.158135,0
 15387038,The Centurians,"Bullwinkle, Pt. 2",2025-04-22T18:12:52.158135,0
@@ -1074,7 +1075,7 @@ track_id,artist,title,added_at,is_deleted
 23837766,Чёрный Обелиск,Гуляй-поле,2025-04-22T18:12:52.158135,0
 23837769,Чёрный Обелиск,Оборона,2025-04-22T18:12:52.158135,0
 23855241,Lindemann,Praise Abort,2025-04-22T18:12:52.158135,0
-23855684,LOUNA,Время X,2025-04-22T18:12:52.158135,0
+23855684,LOUNA,Время X,2025-04-22T18:12:52.158135,1
 23869662,Eluveitie,Luxtos,2025-04-22T18:12:52.158135,0
 23880858,Seasick Steve,Roy's Gang,2025-04-22T18:12:52.158135,0
 23950611,SOFT PLAY,Sockets,2025-04-22T18:12:52.158135,0
@@ -1147,6 +1148,7 @@ track_id,artist,title,added_at,is_deleted
 25141887,Slayer,Take Control,2025-04-22T18:12:52.158135,0
 25141944,BRUTTO,Партизан Рок,2025-04-22T18:12:52.158135,0
 25141946,BRUTTO,Приказ Эрнесто,2025-04-22T18:12:52.158135,0
+2519753,I Mother Earth,Rain Will Fall,2026-08-10T14:12:03.584605,0
 2520765,Anthrax,The Devil You Know,2025-04-22T18:12:52.158135,0
 25245633,Порнофильмы,Молодая семья,2025-04-22T18:12:52.158135,0
 2524789,Psychostick,Because Boobs,2025-04-22T18:12:52.158135,1
@@ -1717,7 +1719,7 @@ track_id,artist,title,added_at,is_deleted
 36298599,Gwar,El Presidente,2025-04-22T18:12:52.158135,0
 36337225,Черти Тихого Омута,Погребенный,2025-09-23T19:02:03.174148,0
 36367574,Alice Merton,No Roots,2025-04-22T18:12:52.158135,0
-36371046,Семён Слепаков,Онуфрий,2025-04-22T18:12:52.158135,1
+36371046,Семён Слепаков,Онуфрий,2025-04-22T18:12:52.158135,0
 36388068,Black Label Society,Fire It Up,2025-04-22T18:12:52.158135,0
 36412066,Nachtblut,Geboren um zu leben,2025-04-22T18:12:52.158135,0
 36412072,Nachtblut,Wat is' denn los mit dir,2025-04-22T18:12:52.158135,0
@@ -2592,7 +2594,7 @@ track_id,artist,title,added_at,is_deleted
 5404298,The 69 Eyes,I Love The Darkness In You,2025-04-22T18:12:52.158135,0
 54095349,Потомучто,Жизнь и смерть,2025-04-22T18:12:52.158135,0
 54108647,Caravan Palace,Supersonics,2025-04-22T18:12:52.158135,0
-54155110,Messer Fur Frau Muller,Кошмары,2025-04-22T18:12:52.158135,0
+54155110,Messer Fur Frau Muller,Кошмары,2025-04-22T18:12:52.158135,1
 54155353,Five.Bolt.Main,Pathetic,2025-04-22T18:12:52.158135,0
 54192468,The White Stripes,Catch Hell Blues,2026-07-31T00:30:42.102527,0
 54278929,The Guggenheim Grotto,Wisdom,2026-03-06T13:02:02.299494,0
@@ -3231,9 +3233,11 @@ track_id,artist,title,added_at,is_deleted
 6915315,Toxic Holocaust,Sound The Charge,2025-04-22T18:12:52.158135,0
 6915316,Toxic Holocaust,Bitch,2025-04-22T18:12:52.158135,0
 6915321,Toxic Holocaust,Nowhere To Run,2026-07-30T18:57:55.027287,0
+6915323,Toxic Holocaust,Revelations,2026-08-10T14:12:03.584605,0
 691973,C+C Music Factory,Gonna Make You Sweat (Everybody Dance Now),2025-04-22T18:12:52.158135,0
 69268532,,Анальный секс,2025-04-22T18:12:52.158135,0
 69293351,KillaGram,Who is Orta,2025-04-22T18:12:52.158135,1
+69293359,KillaGram,ИНХ,2026-08-07T19:12:02.615101,0
 6933724,Lumsk,I trollehender,2025-04-22T18:12:52.158135,0
 69355678,Б.А.У.,Церковь свидетелей Путина,2025-04-22T18:12:52.158135,0
 69355680,Б.А.У.,Армия тьмы,2025-04-22T18:12:52.158135,0
@@ -3548,7 +3552,7 @@ track_id,artist,title,added_at,is_deleted
 815018,"Юрий Никулин, Георгий Вицин, Евгений Моргунов",Постой паровоз,2025-04-22T18:12:52.158135,0
 81533831,Контрибуция,Ночь сорит чудесами,2026-03-05T14:02:02.152777,0
 81624437,"Lords Of Acid, Luc Van Acker",Crablouse,2026-02-09T16:02:03.043754,0
-8165970,Supersonic Future,May Be Yes!,2025-04-22T18:12:52.158135,0
+8165970,Supersonic Future,May Be Yes!,2025-04-22T18:12:52.158135,1
 81835998,Gojira,Sphinx,2026-02-02T16:02:02.615864,0
 819067,Accept,Fast As A Shark,2025-04-22T18:12:52.158135,0
 81912512,Jane Air,Гейши Ниндзя Убийцы,2025-04-22T18:12:52.158135,0
