@@ -9,8 +9,8 @@ from pytest_mock import MockerFixture
 
 
 @pytest.mark.parametrize(('artist', 'title', 'expected'), [
-    ('Nirvana', 'Come as You Are', 'Nirvana - Come as You Are [42]'),
-    ('AC/DC', 'T.N.T', 'AC_DC - T.N.T [42]'),
+    ('Nirvana', 'Come as You Are', 'nirvana - come as you are [42]'),
+    ('AC/DC', 'T.N.T', 'ac_dc - t.n.t [42]'),
     ('a?b', 'c:d*e', 'a_b - c_d_e [42]'),
 ])
 def test_track_filename(artist: str, title: str, expected: str) -> None:
@@ -252,7 +252,7 @@ async def test_download_tracks_encrypted_writes_flac(
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
     assert downloaded == 1
-    assert (tracks_dir / 'user' / 'Artist - Title [1].flac').exists()
+    assert (tracks_dir / 'user' / 'artist - title [1].flac').exists()
     # mp3 path must not be touched when the encrypted stream succeeds
     assert _codec_info(raw).download_async.call_count == 0
 
@@ -283,7 +283,7 @@ async def test_download_tracks_encrypted_writes_m4a(
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
     assert downloaded == 1
-    assert (tracks_dir / 'user' / 'Artist - Title [1].m4a').exists()
+    assert (tracks_dir / 'user' / 'artist - title [1].m4a').exists()
     assert _codec_info(raw).download_async.call_count == 0
 
 
@@ -324,7 +324,7 @@ async def test_download_tracks_skips_existing_lossless(
     _seed_csv(csv_path, make_track, ['1'])
     raw = make_yandex_track(artist='Artist', title='Title')
     (tracks_dir / 'user').mkdir()
-    (tracks_dir / 'user' / f'Artist - Title [1]{existing_ext}').write_bytes(b'')
+    (tracks_dir / 'user' / f'artist - title [1]{existing_ext}').write_bytes(b'')
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
     stream = mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(return_value=None))
@@ -348,7 +348,7 @@ async def test_download_tracks_existing_mp3_attempts_lossless_upgrade(
     _seed_csv(csv_path, make_track, ['1'])
     raw = make_yandex_track(artist='Artist', title='Title')
     (tracks_dir / 'user').mkdir()
-    (tracks_dir / 'user' / 'Artist - Title [1].mp3').write_bytes(b'old')
+    (tracks_dir / 'user' / 'artist - title [1].mp3').write_bytes(b'old')
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
     stream = mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(return_value=None))
@@ -375,7 +375,7 @@ async def test_download_tracks_existing_mp3_upgraded_to_flac(
     _seed_csv(csv_path, make_track, ['1'])
     raw = make_yandex_track(artist='Artist', title='Title')
     (tracks_dir / 'user').mkdir()
-    (tracks_dir / 'user' / 'Artist - Title [1].mp3').write_bytes(b'old')
+    (tracks_dir / 'user' / 'artist - title [1].mp3').write_bytes(b'old')
     client = mocker.MagicMock()
     client.tracks = mocker.AsyncMock(return_value=[raw])
 
@@ -391,4 +391,4 @@ async def test_download_tracks_existing_mp3_upgraded_to_flac(
     downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
 
     assert downloaded == 1
-    assert (tracks_dir / 'user' / 'Artist - Title [1].flac').exists()
+    assert (tracks_dir / 'user' / 'artist - title [1].flac').exists()

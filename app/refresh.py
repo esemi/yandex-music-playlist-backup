@@ -315,12 +315,15 @@ def _track_filename(artist: str, title: str, track_id: str) -> str:
     Returns the name without extension — the caller appends `.flac` / `.m4a` / `.mp3`
     by concatenation (never `Path.with_suffix`, since titles contain dots like "T.N.T").
 
+    The stem is lowercased so names stay case-insensitively stable regardless of how
+    Yandex capitalizes artist/title.
+
     The stem is truncated so the whole name — plus the longest audio extension — fits
     into the filesystem byte limit (compilations with dozens of artists easily blow
     past 255 bytes otherwise). The `[track_id]` tail is always kept intact, so
     truncated names stay unique.
     """
-    raw = f'{artist} - {title}'
+    raw = f'{artist} - {title}'.lower()
     safe = _FILENAME_UNSAFE.sub('_', raw).strip()
 
     max_ext_len = max(len(ext.encode('utf-8')) for ext in _AUDIO_EXTENSIONS)
