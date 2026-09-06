@@ -34,12 +34,35 @@ the cascade is FLAC (`.flac`) / AAC (`.m4a`) → mp3 320 → YouTube. The `get-f
 path is enabled by `prefer_lossless` (on by default); lossless files are noticeably
 larger. Both the FLAC-in-MP4 transcode and the YouTube fallback need `ffmpeg`.
 
+The YouTube fallback pins the player clients it talks to
+(`player_client=web_embedded,web,web_creator,mweb`), because most of `yt-dlp`'s default
+set is unusable on an authed (cookie-carrying) session: `tv` and `tv_downgraded` answer
+`UNPLAYABLE` / "The page needs to be reloaded"
+([yt-dlp#17389](https://github.com/yt-dlp/yt-dlp/issues/17389)), while `ios` and `android`
+are skipped outright — they don't support cookies, so they come back with nothing but
+storyboards and the download dies on `Requested format is not available`. `web_embedded`
+goes first as the one client that reliably serves the full set of audio-only formats;
+the others are there as backups. Once upstream declares those clients healthy again, the
+`extractor_args` override in `app/youtube.py` can go.
+
 Already-downloaded tracks are skipped regardless of format (`.flac`, `.m4a` or `.mp3`),
 so old mp3 files are left untouched — re-fetching them in FLAC is a manual job.
 
 ### Local setup
 
-Requires `ffmpeg` in `PATH` (for the FLAC-in-MP4 transcode and the YouTube mp3 fallback):
+Requires `ffmpeg` in `PATH` (for the FLAC-in-MP4 transcode and the YouTube mp3 fallback).
+
+The YouTube fallback additionally needs a JavaScript runtime in `PATH` — YouTube now
+guards its streams with a JS challenge that `yt-dlp` has to solve. `deno` is the one
+enabled by default:
+
+```shell
+curl -fsSL https://deno.land/install.sh | sh   # installs to ~/.deno/bin
+```
+
+Without it the fallback fails with `The page needs to be reloaded` or `Requested format
+is not available`. If you run the tool from cron, make sure `~/.deno/bin` is on the
+`PATH` of that job.
 
 ```shell
 python3.14 -m venv venv

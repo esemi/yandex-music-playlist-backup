@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 _FILENAME_UNSAFE = re.compile(r'[\\/:*?"<>|]+')
 # Most filesystems (ext4, apfs) cap a single filename at 255 bytes.
-_FILENAME_MAX_BYTES = 255
+_FILENAME_MAX_BYTES = 240
 # Every audio extension a track may already exist under, for skip-existing checks.
 _AUDIO_EXTENSIONS = ('.flac', '.m4a', '.mp3')
 _shutdown = asyncio.Event()
