@@ -39,3 +39,13 @@ def test_ydl_options_cookies_from_settings(mocker: MockerFixture) -> None:
     opts = _ydl_options(Path('/tmp/track.mp3'))
 
     assert opts['cookiefile'] == '/etc/cookies.txt'
+
+
+def test_ydl_options_player_client_workaround() -> None:
+    opts = _ydl_options(Path('/tmp/track.mp3'))
+
+    player_client = opts['extractor_args']['youtube']['player_client']  # type: ignore[index]
+
+    assert player_client == ['web_embedded', 'web', 'web_creator', 'mweb']
+    # the broken-on-authed-sessions clients must stay out of the rotation entirely
+    assert not {'tv', 'tv_downgraded', 'ios', 'android'} & set(player_client)

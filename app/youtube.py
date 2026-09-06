@@ -33,6 +33,13 @@ def _ydl_options(target: Path) -> dict[str, object]:
         'no_warnings': True,
         'noplaylist': True,
         'default_search': 'ytsearch1',
+        # Half of yt-dlp's default client set is unusable on a cookie-carrying session:
+        # tv/tv_downgraded answer UNPLAYABLE ("The page needs to be reloaded", yt-dlp#17389),
+        # while ios/android are skipped outright because they don't support cookies, leaving
+        # only storyboards behind and failing the format selector with "Requested format is
+        # not available". So we whitelist the clients that do work, web_embedded first: it is
+        # the one that reliably serves the full set of audio-only formats.
+        'extractor_args': {'youtube': {'player_client': ['web_embedded', 'web', 'web_creator', 'mweb']}},
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
