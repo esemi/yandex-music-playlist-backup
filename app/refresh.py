@@ -202,7 +202,7 @@ async def _download_one(
     artist = ', '.join(artist.name for artist in track.artists)
     # Filename stem without extension; the winning source decides the real one. We
     # never touch the extension via Path.with_suffix — titles contain dots ("T.N.T").
-    stem = _track_filename(artist, track.title, str(track.id))
+    stem = _track_filename(artist, track.title)
 
     has_flac = any((dest_dir / f'{stem}{ext}').exists() for ext in ('.flac', '.m4a'))
     has_mp3 = (dest_dir / f'{stem}.mp3').exists()
@@ -309,29 +309,29 @@ def _request_shutdown(sig: signal.Signals) -> None:
     _shutdown.set()
 
 
-def _track_filename(artist: str, title: str, track_id: str) -> str:
-    """Build a filesystem-safe filename *stem* `<artist> - <title> [<track_id>]`.
+def _track_filename(artist: str, title: str) -> str:
+    """Build a filesystem-safe filename *stem* `<artist> - <title>`.
 
     Returns the name without extension — the caller appends `.flac` / `.m4a` / `.mp3`
     by concatenation (never `Path.with_suffix`, since titles contain dots like "T.N.T").
 
     The stem is lowercased so names stay case-insensitively stable regardless of how
-    Yandex capitalizes artist/title.
+    Yandex capitalizes artist/title. The track id is deliberately not part of the name:
+    the same track shows up under several ids in Yandex, and keeping the id would store
+    a duplicate file for each of them.
 
     The stem is truncated so the whole name — plus the longest audio extension — fits
     into the filesystem byte limit (compilations with dozens of artists easily blow
-    past 255 bytes otherwise). The `[track_id]` tail is always kept intact, so
-    truncated names stay unique.
+    past 255 bytes otherwise).
     """
     raw = f'{artist} - {title}'.lower()
     safe = _FILENAME_UNSAFE.sub('_', raw).strip()
 
     max_ext_len = max(len(ext.encode('utf-8')) for ext in _AUDIO_EXTENSIONS)
-    tail = f' [{track_id}]'
-    budget = _FILENAME_MAX_BYTES - len(tail.encode('utf-8')) - max_ext_len
+    budget = _FILENAME_MAX_BYTES - max_ext_len
     encoded = safe.encode('utf-8')
     if len(encoded) > budget:
         # cut on a byte boundary, then drop a possibly broken trailing char
         safe = encoded[:budget].decode('utf-8', errors='ignore').rstrip()
 
-    return f'{safe}{tail}'
+    return safe
