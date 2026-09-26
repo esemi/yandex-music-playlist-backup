@@ -45,6 +45,14 @@ goes first as the one client that reliably serves the full set of audio-only for
 the others are there as backups. Once upstream declares those clients healthy again, the
 `extractor_args` override in `app/youtube.py` can go.
 
+Censored versions (Yandex marks them with `content_warning: clean` — bleeped or muted
+by the label) are never downloaded as is. Instead the tool searches the Yandex catalog for
+an uncensored twin: same main artist and title, not marked `clean`, and within 5 seconds
+of the censored one's duration (so an album version, remix or live cut doesn't count).
+Explicit-marked twins win. With no twin found, the track goes to the YouTube fallback.
+An existing `.mp3` next to a censored track is treated as final, so the search doesn't
+repeat on every run.
+
 Already-downloaded tracks are skipped regardless of format (`.flac`, `.m4a` or `.mp3`),
 so old mp3 files are left untouched — re-fetching them in FLAC is a manual job.
 

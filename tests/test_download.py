@@ -382,3 +382,90 @@ async def test_download_tracks_existing_mp3_upgraded_to_flac(
 
     assert downloaded == 1
     assert (tracks_dir / 'user' / 'artist - title.flac').exists()
+
+
+def _search_result(mocker: MockerFixture, hits: list[object]) -> object:
+    result = mocker.MagicMock()
+    result.tracks.results = hits
+    return result
+
+
+async def test_download_tracks_censored_swapped_for_uncensored_twin(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(track_id='1', content_warning='clean', duration_ms=150_000)
+    twin = make_yandex_track(track_id='2', content_warning='explicit', duration_ms=149_500)
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+    client.search = mocker.AsyncMock(return_value=_search_result(mocker, [raw, twin]))
+    stream = mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(return_value=None))
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 1
+    assert stream.call_args.args[1] == '2'
+    assert _codec_info(raw).download_async.call_count == 0
+    assert _codec_info(twin).download_async.call_count == 1
+
+
+@pytest.mark.parametrize('twin_kwargs', [
+    {'content_warning': 'clean'},
+    {'duration_ms': 300_000},
+    {'title': 'Title (Live)'},
+    {'artist': 'Someone Else'},
+    {'available': False},
+])
+async def test_download_tracks_censored_without_twin_falls_back_to_youtube(
+    twin_kwargs: dict[str, object],
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(track_id='1', artist='Artist', title='Title', content_warning='clean')
+    not_a_twin = make_yandex_track(track_id='2', **({'artist': 'Artist', 'title': 'Title'} | twin_kwargs))
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+    client.search = mocker.AsyncMock(return_value=_search_result(mocker, [raw, not_a_twin]))
+    stream = mocker.patch('app.refresh.download_best_encrypted', new=mocker.AsyncMock(return_value=None))
+    yt = mocker.patch('app.refresh.download_from_youtube', new=mocker.AsyncMock(return_value=True))
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 1
+    assert yt.call_args.args[0] == 'Artist Title'
+    assert stream.call_count == 0
+    assert _codec_info(raw).download_async.call_count == 0
+    assert _codec_info(not_a_twin).download_async.call_count == 0
+
+
+async def test_download_tracks_censored_existing_mp3_skipped(
+    make_track: Callable[..., Track],
+    make_yandex_track: Callable[..., object],
+    tracks_dir: Path,
+    tmp_path: Path,
+    mocker: MockerFixture,
+) -> None:
+    """An mp3 next to a censored track is the uncensored replacement — no re-search every run."""
+    csv_path = tmp_path / 'user.csv'
+    _seed_csv(csv_path, make_track, ['1'])
+    raw = make_yandex_track(artist='Artist', title='Title', content_warning='clean')
+    (tracks_dir / 'user').mkdir()
+    (tracks_dir / 'user' / 'artist - title.mp3').write_bytes(b'old')
+    client = mocker.MagicMock()
+    client.tracks = mocker.AsyncMock(return_value=[raw])
+    client.search = mocker.AsyncMock()
+
+    downloaded = await _download_tracks(client, owner_id='user', csv_path=csv_path)
+
+    assert downloaded == 0
+    assert client.search.call_count == 0

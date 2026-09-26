@@ -25,6 +25,10 @@ _FILENAME_UNSAFE = re.compile(r'[\\/:*?"<>|]+')
 _FILENAME_MAX_BYTES = 240
 # Every audio extension a track may already exist under, for skip-existing checks.
 _AUDIO_EXTENSIONS = ('.flac', '.m4a', '.mp3')
+# Yandex marks label-censored (bleeped / muted) versions with this content_warning.
+_CENSORED_WARNING = 'clean'
+# How far an uncensored twin's duration may drift from the censored one to count as the same cut.
+_TWIN_DURATION_TOLERANCE_MS = 5_000
 _shutdown = asyncio.Event()
 
 
@@ -191,6 +195,9 @@ async def _download_one(
     Cascade: best `get-file-info` codec (FLAC / FLAC-in-MP4 / AAC) -> legacy mp3 320
     -> YouTube (for tracks Yandex reports as unavailable). The file extension follows
     whichever source won (`.flac` / `.m4a` / `.mp3`).
+
+    A censored (`content_warning == 'clean'`) track is never downloaded as is: we swap it
+    for an uncensored twin from the Yandex catalog, or go to YouTube if there is none.
     """
     if _shutdown.is_set():
         return False
@@ -211,8 +218,9 @@ async def _download_one(
         logger.debug(f'skip existing flac for {artist} - {track.title}')
         return False
 
-    if not track.available and has_mp3:
-        logger.debug(f'skip existing mp3 for unavailable {artist} - {track.title}')
+    is_censored = track.content_warning == _CENSORED_WARNING
+    if (not track.available or is_censored) and has_mp3:
+        logger.debug(f'skip existing mp3 for unavailable or censored {artist} - {track.title}')
         return False
 
     async with semaphore:
@@ -222,6 +230,14 @@ async def _download_one(
         if not track.available:
             return await _download_unavailable(artist, track.title, dest_dir / f'{stem}.mp3')
 
+        if is_censored:
+            twin = await _find_uncensored_twin(client, track)
+            if twin is None:
+                logger.info(f'censored on yandex, no uncensored twin, trying youtube: {artist} - {track.title}')
+                return await download_from_youtube(f'{artist} {track.title}', dest_dir / f'{stem}.mp3')
+            logger.info(f'censored on yandex, using uncensored twin {twin.id} for {artist} - {track.title}')
+            track = twin
+
         if await download_best_encrypted(client, str(track.id), dest_dir, stem, has_mp3):
             return True
 
@@ -230,6 +246,41 @@ async def _download_one(
 
         logger.info(f'no get-file-info stream for {artist} - {track.title}, falling back to mp3 from yandex')
         return await _download_mp3(track, dest_dir / f'{stem}.mp3')
+
+
+async def _find_uncensored_twin(client: ClientAsync, track: YandexTrack) -> YandexTrack | None:
+    """Look up the same recording without the `clean` mark in the Yandex catalog.
+
+    A twin must share the main artist and title, be available and be about as long as
+    the censored one — otherwise it's a different cut (album version, remix, live).
+    Explicitly marked twins win over unmarked ones.
+    """
+    main_artist = track.artists[0].name.casefold()
+    title = track.title.casefold().strip()
+    try:
+        search = await client.search(f'{track.artists[0].name} {track.title}', type_='track')
+    except (TimedOutError, NetworkError) as exc:
+        logger.warning(f'uncensored twin search failed {exc}')
+        return None
+    if not search or not search.tracks:
+        return None
+
+    candidates = [
+        hit
+        for hit in search.tracks.results
+        if hit.id != track.id
+        and hit.available
+        and hit.content_warning != _CENSORED_WARNING
+        and hit.artists
+        and hit.artists[0].name.casefold() == main_artist
+        and hit.title.casefold().strip() == title
+        and hit.duration_ms is not None
+        and track.duration_ms is not None
+        and abs(hit.duration_ms - track.duration_ms) <= _TWIN_DURATION_TOLERANCE_MS
+    ]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda hit: hit.content_warning == 'explicit')
 
 
 async def _download_mp3(track: YandexTrack, target: Path) -> bool:

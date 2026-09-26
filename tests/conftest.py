@@ -72,6 +72,8 @@ def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
         title: str = 'Title',
         available: bool = True,
         track_type: str = 'music',
+        content_warning: str | None = None,
+        duration_ms: int = 200_000,
     ) -> object:
         # Two mp3 variants so tests can assert the best-bitrate pick, not just [-1].
         low = mocker.MagicMock()
@@ -88,6 +90,8 @@ def make_yandex_track(mocker: MockerFixture) -> Callable[..., object]:
         track.title = title
         track.available = available
         track.type = track_type
+        track.content_warning = content_warning
+        track.duration_ms = duration_ms
         track.artists = [mocker.MagicMock()]
         track.artists[0].name = artist
         track.get_download_info_async = mocker.AsyncMock(return_value=[low, high])
